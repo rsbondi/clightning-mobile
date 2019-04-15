@@ -150,7 +150,8 @@ export default {
             data => {
               this.payments = data.content
                 .toJSON()
-                .result.payments.filter(p => p.status == "complete");
+                .result.payments.filter(p => p.status == "complete")
+                .reverse();
             },
             err => (this.msg = `${err}: ${new Date().toString()}`)
           );
@@ -162,7 +163,8 @@ export default {
             data => {
               this.invoices = data.content
                 .toJSON()
-                .result.invoices.filter(i => i.status == "paid");
+                .result.invoices.filter(i => i.status == "paid")
+                .reverse();
             },
             err => (this.msg = `${err}: ${new Date().toString()}`)
           );
