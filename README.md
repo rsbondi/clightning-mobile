@@ -1,6 +1,7 @@
 # Clightning Mobile Client
 
-A mobile android app to control your clightning node.  This is not a mobile wallet, it is a remote client, all wallet functionality is in you node.
+A mobile android app to control your clightning node.  This is not a mobile wallet, it is a remote client, 
+all wallet functionality is in your node.
 
 ## Warning: this is in alpha
 
