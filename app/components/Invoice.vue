@@ -7,8 +7,11 @@
       <TextField v-model="sats" hint="Amount" keyboardType="number"/>
       <TextField v-model="description" hint="Description"/>
       <Button text="Get Invoice" @tap="getInvoice"/>
-      <TextView :text="bolt11"/>
+      <FlexboxLayout v-if="this.bolt11.length">
+        <Image :src="qrcode" stretch="aspectFill" height="400" width="400" alignSelf="center" />
+      </FlexboxLayout>
       <Button v-if="this.bolt11.length" text="Copy" @tap="clip"/>
+      <TextView :text="bolt11"/>
     </StackLayout>
   </Page>
 </template>
@@ -16,6 +19,7 @@
 <script>
 import Util from "./util";
 const clipboard = require("nativescript-clipboard");
+const QRCode = require("qrcode");
 
 export default {
   mixins: [Util],
@@ -23,7 +27,8 @@ export default {
     return {
       sats: "",
       description: "",
-      bolt11: ""
+      bolt11: "",
+      qrcode: ""
     };
   },
   methods: {
@@ -33,14 +38,19 @@ export default {
         Date.now(),
         this.description
       ]).then(data => {
-        const result = data.content.toJSON().result;
+        const result = data.content.toJSON().result
         this.bolt11 = result.bolt11;
+        QRCode.toDataURL(this.bolt11).then(url => {
+            this.qrcode = url
+          })
+          .catch(err => {
+            console.error(err);
+          });
+
       });
     },
     clip() {
-      clipboard.setText(this.bolt11).then(function() {
-          //alert("invoice copied to the clipboard").then(() => this.bolt11 = '')
-        });
+      clipboard.setText(this.bolt11).then(function() {});
     }
   }
 };
