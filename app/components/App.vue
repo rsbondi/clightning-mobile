@@ -21,7 +21,7 @@
                 />
                 <Label
                   :text="pay.msatoshi/ 1000"
-                  class="spent"
+                  class="spent gap"
                   style.textAlignment="right"
                   height="40"
                   col="1"
@@ -39,7 +39,7 @@
                 <Label :text="(new Date(inv.paid_at*1000).toString())" height="40" col="0" row="0"/>
                 <Label
                   :text="inv.msatoshi/1000"
-                  class="mine"
+                  class="mine gap"
                   style.textAlignment="right"
                   height="40"
                   col="1"
@@ -227,6 +227,9 @@ ActionBar Label {
 
 .spent {
   color: red;
+}
+
+.gap {
   padding-right: 5;
 }
 

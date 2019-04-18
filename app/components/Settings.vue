@@ -30,14 +30,29 @@ export default {
     update() {
       appSettings.setString('remoteUrl', this.remoteUrl)
       appSettings.setString('remoteUser', this.remoteUser)
-      appSettings.setString('remotePassword', this.remotePassword)
-      appSettings.setString('appPassword', this.appPassword)
+      if(this.remotePassword) {
+        appSettings.setString('remotePassword', this.remotePassword)
+        global.remotePassword = this.remotePassword;
+      }
+      if(this.appPassword) {
+        appSettings.setString('appPassword', this.appPassword)
+        global.appPassword = this.appPassword;
+      }
       global.remoteUrl = this.remoteUrl;
       global.remoteUser = this.remoteUser;
-      global.remotePassword = this.remotePassword;
-      global.appPassword = this.appPassword;
       this.$navigateTo(App);
     }
+  },
+  mounted() {
+    setTimeout(() => {
+      const url = appSettings.getString("remoteUrl")
+      if (typeof url != 'undefined') 
+        this.remoteUrl = url
+
+      const user = appSettings.getString("remoteUser")
+      if (typeof user != 'undefined') 
+        this.remoteUser = user
+    }, 0)
   }
 };
 </script>
