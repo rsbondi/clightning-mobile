@@ -3,16 +3,18 @@
     <ActionBar title="Invoice">
       <NavigationButton text="Go back" android.systemIcon="ic_menu_back" @tap="$navigateBack"/>
     </ActionBar>
-    <StackLayout>
-      <TextField v-model="sats" hint="Amount" keyboardType="number"/>
-      <TextField v-model="description" hint="Description"/>
-      <Button text="Get Invoice" @tap="getInvoice"/>
-      <FlexboxLayout v-if="this.bolt11.length">
-        <Image :src="qrcode" stretch="aspectFill" height="400" width="400" alignSelf="center" />
-      </FlexboxLayout>
-      <Button v-if="this.bolt11.length" text="Copy" @tap="clip"/>
-      <TextView :text="bolt11"/>
-    </StackLayout>
+    <ScrollView>
+      <StackLayout>
+        <TextField v-model="sats" hint="Amount" keyboardType="number"/>
+        <TextField v-model="description" hint="Description"/>
+        <Button text="Get Invoice" @tap="getInvoice"/>
+        <FlexboxLayout v-if="this.bolt11.length"  flexDirection="column-reverse" justifyContent="space-around" alignItems="stretch">
+          <Image :src="qrcode" height="300" width="300" alignSelf="center"/>
+        </FlexboxLayout>
+        <Button v-if="this.bolt11.length" text="Copy" @tap="clip"/>
+        <TextView :text="bolt11"/>
+      </StackLayout>
+    </ScrollView>
   </Page>
 </template>
 
@@ -38,15 +40,15 @@ export default {
         Date.now(),
         this.description
       ]).then(data => {
-        const result = data.content.toJSON().result
+        const result = data.content.toJSON().result;
         this.bolt11 = result.bolt11;
-        QRCode.toDataURL(this.bolt11).then(url => {
-            this.qrcode = url
+        QRCode.toDataURL(this.bolt11)
+          .then(url => {
+            this.qrcode = url;
           })
           .catch(err => {
             console.error(err);
           });
-
       });
     },
     clip() {
