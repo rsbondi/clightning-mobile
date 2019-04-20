@@ -27,7 +27,7 @@
                   col="1"
                   row="0"
                 />
-                <Label :text="pay.destination" height="40" col="2" row="0"/>
+                <Label :text="pay.label || pay.destination" height="40" col="2" row="0"/>
               </GridLayout>
             </v-template>
           </ListView>
