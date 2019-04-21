@@ -18,16 +18,17 @@
                   height="40"
                   col="0"
                   row="0"
+                  class="gap"
                 />
+                <Label :text="pay.label || pay.destination" height="40" col="1" row="0"/>
                 <Label
                   :text="pay.msatoshi/ 1000"
-                  class="spent gap"
+                  class="spent"
                   style.textAlignment="right"
                   height="40"
-                  col="1"
+                  col="2"
                   row="0"
                 />
-                <Label :text="pay.label || pay.destination" height="40" col="2" row="0"/>
               </GridLayout>
             </v-template>
           </ListView>
@@ -36,16 +37,16 @@
           <ListView for="inv in invoices" @itemTap="onTapInvoiceList">
             <v-template>
               <GridLayout columns="3* 2* 5*" rows="1*" class="list">
-                <Label :text="(new Date(inv.paid_at*1000).toString())" height="40" col="0" row="0"/>
+                <Label :text="(new Date(inv.paid_at*1000).toString())" height="40" col="0" row="0" class="gap"/>
+                <Label :text="inv.description" height="40" col="1" row="0"/>
                 <Label
                   :text="inv.msatoshi/1000"
-                  class="mine gap"
+                  class="mine"
                   style.textAlignment="right"
                   height="40"
-                  col="1"
+                  col="2"
                   row="0"
                 />
-                <Label :text="inv.description" height="40" col="2" row="0"/>
               </GridLayout>
             </v-template>
           </ListView>
@@ -55,15 +56,15 @@
             <v-template>
               <GridLayout columns="1* 1* 1*" rows="1*" class="list">
                 <Label :text="peer.id" height="40" col="0" row="0"/>
+                <Label :text="peer.theirs" style.textAlignment="right" height="40" col="1" row="0"/>
                 <Label
                   :text="peer.mine"
                   style.textAlignment="right"
                   class="mine"
                   height="40"
-                  col="1"
+                  col="2"
                   row="0"
                 />
-                <Label :text="peer.theirs" style.textAlignment="right" height="40" col="2" row="0"/>
               </GridLayout>
             </v-template>
           </ListView>
