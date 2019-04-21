@@ -24,5 +24,7 @@ Currently there is some basic payment, connection and invoice information.  Any 
 
 ## To be implemented
 * QR code scanner for payements, currently clipboard only
-* QR generator for presenting invoice, currently bolt11 text only
 * Secure app settings
+* Channel management
+* Formatted detail pages
+* Debug helpers
