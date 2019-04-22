@@ -5,7 +5,7 @@
     </ActionBar>
     <ScrollView>
       <StackLayout>
-        <TextField v-model="sats" hint="Amount" keyboardType="number"/>
+        <TextField v-model="sats" hint="Amount(sats)" keyboardType="number"/>
         <TextField v-model="description" hint="Description"/>
         <Button text="Get Invoice" @tap="getInvoice"/>
         <FlexboxLayout v-if="this.bolt11.length"  flexDirection="column-reverse" justifyContent="space-around" alignItems="stretch">

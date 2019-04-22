@@ -72,6 +72,7 @@
           </ListView>
         </TabViewItem>
         <TabViewItem title="Debug">
+          <ScrollView>
           <DockLayout stretchLastChild="true">
             <TextField
               dock="top"
@@ -84,6 +85,7 @@
               <TextView dock="top" :text="rpcResponse"/>
             </ScrollView>
           </DockLayout>
+          </ScrollView>
         </TabViewItem>
       </TabView>
     </GridLayout>
