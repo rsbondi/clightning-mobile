@@ -157,7 +157,7 @@ export default {
             data => {
               this.payments = data.content
                 .toJSON()
-                .result.payments //.filter(p => p.status == "complete")
+                .result.payments
                 .reverse();
             },
             err => (this.msg = `${err}: ${new Date().toString()}`)
@@ -170,7 +170,7 @@ export default {
             data => {
               this.invoices = data.content
                 .toJSON()
-                .result.invoices //.filter(i => i.status == "paid")
+                .result.invoices
                 .reverse();
             },
             err => (this.msg = `${err}: ${new Date().toString()}`)
@@ -182,11 +182,13 @@ export default {
           this.callRemote("listpeers").then(
             data => {
               this.peers = data.content.toJSON().result.peers.map(peer => {
-                const mine = Math.floor(peer.channels[0].msatoshi_to_us / 1000);
-                peer.mine = mine;
-                peer.theirs = Math.floor(
-                  peer.channels[0].msatoshi_total / 1000 - mine
-                );
+                if(peer.channels.length) {
+                  const mine = Math.floor(peer.channels[0].msatoshi_to_us / 1000);
+                  peer.mine = mine;
+                  peer.theirs = Math.floor(
+                    peer.channels[0].msatoshi_total / 1000 - mine
+                  );
+                } else {peers.mine = ""; peers.theirs = ""}
                 return peer;
               });
             },
