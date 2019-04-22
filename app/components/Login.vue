@@ -9,27 +9,13 @@
 </template>
 
 <script>
-/*
-WARNING, not secure storage, temporary for test
-DO NOT USE WITH MORE FUNDS THAN YOU ARE WILLING TO LOSE
-nativescript-secure-storage seems broken, on call to hawk.Hawk undefined
-*/
-
 import App from "./App";
 import Settings from "./Settings";
-const appSettings = require("application-settings");
-// const SecureStorage = require("nativescript-secure-storage").SecureStorage;
-// const secureStorage = new SecureStorage();
 
-// let user;
-// try {
-//   user = secureStorage.getSync({
-//     key: "remoteUser"
-//   });
-//   console.log(user);
-// } catch (e) {
-//   console.log(e);
-// }
+const SecureStorage = require("nativescript-secure-storage").SecureStorage;
+const secureStorage = new SecureStorage();
+
+let user;
 
 export default {
   data() {
@@ -46,15 +32,24 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      if (typeof appSettings.getString("appPassword") == 'undefined') {
-        this.$navigateTo(Settings);
-      } else {
-        global.remoteUrl = appSettings.getString("remoteUrl");
-        global.remoteUser = appSettings.getString("remoteUser");
-        global.remotePassword = appSettings.getString("remotePassword");
-        global.appPassword = appSettings.getString("appPassword");
+      try {
+        secureStorage.get({
+          key: "appPassword"
+        }).then(async pass => {
+          if (!pass) {
+            this.$navigateTo(Settings);
+          } else {
+            global.remoteUrl = await secureStorage.get({key: "remoteUrl"})
+            global.remoteUser = await secureStorage.get({key: "remoteUser"})
+            global.remotePassword = await secureStorage.get({key: "remotePassword"})
+            global.appPassword = pass
+          }
+
+        })
+      } catch (e) {
+        console.log(e);
       }
-    },0)
+    }, 0);
   }
 };
 </script>

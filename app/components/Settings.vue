@@ -14,7 +14,9 @@
 </template>
 
 <script>
-const appSettings = require("application-settings");
+const SecureStorage = require("nativescript-secure-storage").SecureStorage;
+const secureStorage = new SecureStorage();
+
 import App from "./App";
 
 export default {
@@ -27,15 +29,15 @@ export default {
     };
   },
   methods: {
-    update() {
-      appSettings.setString('remoteUrl', this.remoteUrl)
-      appSettings.setString('remoteUser', this.remoteUser)
+    async update() {
+      await secureStorage.set({key:'remoteUrl', value:this.remoteUrl})
+      await secureStorage.set({key:'remoteUser', value:this.remoteUser})
       if(this.remotePassword) {
-        appSettings.setString('remotePassword', this.remotePassword)
+        await secureStorage.set({key:'remotePassword', value:this.remotePassword})
         global.remotePassword = this.remotePassword;
       }
       if(this.appPassword) {
-        appSettings.setString('appPassword', this.appPassword)
+        await secureStorage.set({key:'appPassword', value:this.appPassword})
         global.appPassword = this.appPassword;
       }
       global.remoteUrl = this.remoteUrl;
@@ -44,12 +46,13 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
-      const url = appSettings.getString("remoteUrl")
+    setTimeout(async () => {
+      const url = await secureStorage.get({key: "remoteUrl"})
+      const user = await secureStorage.get({key: "remoteUser"})
+
       if (typeof url != 'undefined') 
         this.remoteUrl = url
 
-      const user = appSettings.getString("remoteUser")
       if (typeof user != 'undefined') 
         this.remoteUser = user
     }, 0)

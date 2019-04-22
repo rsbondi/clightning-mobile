@@ -24,7 +24,6 @@ Currently there is some basic payment, connection and invoice information.  Any 
 
 ## To be implemented
 * QR code scanner for payements, currently clipboard only
-* Secure app settings
 * Channel management
 * Formatted detail pages
 * Debug helpers
