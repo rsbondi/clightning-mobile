@@ -23,7 +23,7 @@
                 <Label :text="pay.label || pay.destination" height="40" col="1" row="0"/>
                 <Label
                   :text="pay.msatoshi/ 1000"
-                  class="spent"
+                  :class="pay.status == 'failed' ? `failed` : `spent`"
                   style.textAlignment="right"
                   height="40"
                   col="2"
@@ -36,12 +36,14 @@
         <TabViewItem title="Invoices">
           <ListView for="inv in invoices" @itemTap="onTapInvoiceList">
             <v-template>
-              <GridLayout columns="3* 2* 5*" rows="1*" class="list">
-                <Label :text="(new Date(inv.paid_at*1000).toString())" height="40" col="0" row="0" class="gap"/>
+              <GridLayout columns="3* 5* 2*" rows="1*" class="list">
+                <Label :text="(new Date((inv.paid_at ? inv.paid_at : inv.expires_at) *1000).toString())" 
+                  :class="inv.status == 'unpaid' ? 'spent' :  inv.status == 'expired' ? 'spent failed' : ''"
+                  height="40" col="0" row="0" class="gap"/>
                 <Label :text="inv.description" height="40" col="1" row="0"/>
                 <Label
                   :text="inv.msatoshi/1000"
-                  class="mine"
+                  :class="inv.status == 'paid' ? 'mine' : inv.status == 'expired' ? 'failed' : ''"
                   style.textAlignment="right"
                   height="40"
                   col="2"
@@ -151,7 +153,7 @@ export default {
             data => {
               this.payments = data.content
                 .toJSON()
-                .result.payments.filter(p => p.status == "complete")
+                .result.payments //.filter(p => p.status == "complete")
                 .reverse();
             },
             err => (this.msg = `${err}: ${new Date().toString()}`)
@@ -164,7 +166,7 @@ export default {
             data => {
               this.invoices = data.content
                 .toJSON()
-                .result.invoices.filter(i => i.status == "paid")
+                .result.invoices //.filter(i => i.status == "paid")
                 .reverse();
             },
             err => (this.msg = `${err}: ${new Date().toString()}`)
@@ -228,6 +230,10 @@ ActionBar Label {
 
 .spent {
   color: red;
+}
+
+.failed {
+  text-decoration: line-through;
 }
 
 .gap {
