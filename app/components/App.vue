@@ -257,4 +257,12 @@ ActionBar Label {
   vertical-align: middle;
   width: 100%;
 }
+
+TextView {
+  font-family: monospace;
+  font-size: 12;
+  background-color: transparent;
+  border-color: transparent;
+  color: #888;
+}
 </style>
