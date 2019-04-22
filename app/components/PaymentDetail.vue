@@ -55,29 +55,3 @@ export default {
 };
 </script>
 
-<style scoped>
-WrapLayout {
-  padding: "5";
-  margin-top: 15
-}
-
-TextView {
-  font-family: monospace;
-  font-size: 12;
-  background-color: transparent;
-  border-color: transparent;
-  color: #888;
-}
-
-.label {
-  font-weight: bold;
-  text-align: right;
-  padding-right: 5;
-  color: #53ba82;
-}
-
-.biglabel {
-  text-align: center;
-  margin-top: 15;
-}
-</style>

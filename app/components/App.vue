@@ -54,7 +54,7 @@
           </ListView>
         </TabViewItem>
         <TabViewItem title="Channels">
-          <ListView for="peer in peers">
+          <ListView for="peer in peers" @itemTap="onTapPeerList">
             <v-template>
               <GridLayout columns="1* 1* 1*" rows="1*" class="list">
                 <Label :text="peer.id" height="40" col="0" row="0"/>
@@ -97,6 +97,7 @@ import PayScan from "./PayScan";
 import Invoice from "./Invoice";
 import InvoiceDetail from "./InvoiceDetail";
 import PaymentDetail from "./PaymentDetail";
+import PeerDetail from "./PeerDetail";
 import Util from "./util";
 
 export default {
@@ -144,6 +145,9 @@ export default {
     },
     onTapPaymentList(event) {
       this.$navigateTo(PaymentDetail, { props: { payment: event.item } });
+    },
+    onTapPeerList(event) {
+      this.$navigateTo(PeerDetail, { props: { peer: event.item } });
     },
     indexChange(args) {
       this.selectedIndex = args.value;
