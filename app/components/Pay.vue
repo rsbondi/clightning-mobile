@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <Page @navigatedTo="checkClip">
     <ActionBar title="Pay Invoice">
       <NavigationButton text="Go back" android.systemIcon="ic_menu_back" @tap="$navigateBack"/>
     </ActionBar>
@@ -14,6 +14,7 @@
 
 <script>
 import Util from "./util";
+const clipboard = require("nativescript-clipboard");
 
 export default {
   mixins: [Util],
@@ -26,6 +27,15 @@ export default {
     };
   },
   methods: {
+    checkClip() {
+      clipboard.getText().then(clip => {
+        if(clip) {
+          if(["lnbcrt", "lnbc", "lntb", "lnsb"].filter(l => clip.indexOf(l) === 0).length) {
+            this.bolt11 = clip
+          }
+        }
+      })
+    },
     payInvoice() {
       this.callRemote("pay", [
         this.bolt11,

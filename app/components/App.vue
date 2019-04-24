@@ -37,9 +37,14 @@
           <ListView for="inv in invoices" @itemTap="onTapInvoiceList">
             <v-template>
               <GridLayout columns="3* 5* 2*" rows="1*" class="list">
-                <Label :text="(new Date((inv.paid_at ? inv.paid_at : inv.expires_at) *1000).toString())" 
+                <Label
+                  :text="(new Date((inv.paid_at ? inv.paid_at : inv.expires_at) *1000).toString())"
                   :class="inv.status == 'unpaid' ? 'spent' :  inv.status == 'expired' ? 'spent failed' : ''"
-                  height="40" col="0" row="0" class="gap"/>
+                  height="40"
+                  col="0"
+                  row="0"
+                  class="gap"
+                />
                 <Label :text="inv.description" height="40" col="1" row="0"/>
                 <Label
                   :text="inv.msatoshi/1000"
@@ -72,7 +77,6 @@
           </ListView>
         </TabViewItem>
         <TabViewItem title="Debug">
-          <ScrollView>
           <DockLayout stretchLastChild="true">
             <TextField
               dock="top"
@@ -81,11 +85,12 @@
               hint="Enter rpc command"
             />
             <Button dock="top" text="Execute" @tap="execRPC"/>
-            <ScrollView orientation="horizontal">
-              <TextView dock="top" :text="rpcResponse"/>
+            <ScrollView>
+              <ScrollView orientation="horizontal">
+                <TextView dock="top" :text="rpcResponse"/>
+              </ScrollView>
             </ScrollView>
           </DockLayout>
-          </ScrollView>
         </TabViewItem>
       </TabView>
     </GridLayout>
@@ -157,10 +162,7 @@ export default {
         case 0:
           this.callRemote("listsendpays").then(
             data => {
-              this.payments = data.content
-                .toJSON()
-                .result.payments
-                .reverse();
+              this.payments = data.content.toJSON().result.payments.reverse();
             },
             err => (this.msg = `${err}: ${new Date().toString()}`)
           );
@@ -170,10 +172,7 @@ export default {
         case 1:
           this.callRemote("listinvoices").then(
             data => {
-              this.invoices = data.content
-                .toJSON()
-                .result.invoices
-                .reverse();
+              this.invoices = data.content.toJSON().result.invoices.reverse();
             },
             err => (this.msg = `${err}: ${new Date().toString()}`)
           );
@@ -184,13 +183,18 @@ export default {
           this.callRemote("listpeers").then(
             data => {
               this.peers = data.content.toJSON().result.peers.map(peer => {
-                if(peer.channels.length) {
-                  const mine = Math.floor(peer.channels[0].msatoshi_to_us / 1000);
+                if (peer.channels.length) {
+                  const mine = Math.floor(
+                    peer.channels[0].msatoshi_to_us / 1000
+                  );
                   peer.mine = mine;
                   peer.theirs = Math.floor(
                     peer.channels[0].msatoshi_total / 1000 - mine
                   );
-                } else {peers.mine = ""; peers.theirs = ""}
+                } else {
+                  peers.mine = "";
+                  peers.theirs = "";
+                }
                 return peer;
               });
             },
@@ -224,7 +228,7 @@ ActionBar {
   color: #ffffff;
 }
 
-ActionBar Label {
+ActionBar label {
   text-align: center;
   vertical-align: middle;
   width: 100%;
