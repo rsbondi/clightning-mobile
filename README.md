@@ -25,5 +25,16 @@ Currently there is some basic payment, connection and invoice information.  Any 
 ## To be implemented
 * QR code scanner for payements, currently clipboard only
 * Channel management
-* Formatted detail pages
 * Debug helpers
+
+## Screenshots
+
+|Make Payment|Create Invoice|
+|-------|----------|
+|![alt text](screenshots/pay.png)|![alt text](screenshots/invoice.png)|
+
+|Payment Detail|Hard Core|
+|-------|----------|
+|![alt text](screenshots/paydetail.png)|![alt text](screenshots/debug.png)|
+
+[more](./screenshots)

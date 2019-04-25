@@ -34,15 +34,15 @@ export default {
     setTimeout(() => {
       try {
         secureStorage.get({
-          key: "appPassword"
-        }).then(async pass => {
-          if (!pass) {
+          key: "remoteUrl"
+        }).then(async url => {
+          if (!url) {
             this.$navigateTo(Settings);
           } else {
-            global.remoteUrl = await secureStorage.get({key: "remoteUrl"})
+            global.appPassword = await secureStorage.get({key: "appPassword"})
             global.remoteUser = await secureStorage.get({key: "remoteUser"})
             global.remotePassword = await secureStorage.get({key: "remotePassword"})
-            global.appPassword = pass
+            global.remoteUrl = url
           }
 
         })
