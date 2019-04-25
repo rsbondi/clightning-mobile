@@ -62,7 +62,7 @@
           <ListView for="peer in peers" @itemTap="onTapPeerList">
             <v-template>
               <GridLayout columns="1* 1* 1*" rows="1*" class="list">
-                <Label :text="peer.id" height="40" col="0" row="0"/>
+                <Label :class="peer.connected ? '' : 'failed'" :text="peer.id" height="40" col="0" row="0"/>
                 <Label :text="peer.theirs" style.textAlignment="right" height="40" col="1" row="0"/>
                 <Label
                   :text="peer.mine"

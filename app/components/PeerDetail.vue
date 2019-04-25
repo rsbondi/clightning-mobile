@@ -12,8 +12,8 @@
         <Label class="label" text="connected" width="30%"/>
         <Label :text="$props.peer.connected" width="70%"/>
 
-        <Label class="label" text="address" width="30%"/>
-        <Label :text="$props.peer.netaddr[0]" width="70%"/>
+        <Label v-if="$props.peer.netaddr" class="label" text="address" width="30%"/>
+        <Label v-if="$props.peer.netaddr" :text="$props.peer.netaddr[0]" width="70%"/>
 
         <WrapLayout v-if="$props.peer.channels.length">
             <Label class="label biglabel" text="Channel" width="100%"/>
