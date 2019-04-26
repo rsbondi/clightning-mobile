@@ -62,7 +62,13 @@
           <ListView for="peer in peers" @itemTap="onTapPeerList">
             <v-template>
               <GridLayout columns="1* 1* 1*" rows="1*" class="list">
-                <Label :class="peer.connected ? '' : 'failed'" :text="peer.id" height="40" col="0" row="0"/>
+                <Label
+                  :class="peer.connected ? '' : 'failed'"
+                  :text="peer.id"
+                  height="40"
+                  col="0"
+                  row="0"
+                />
                 <Label :text="peer.theirs" style.textAlignment="right" height="40" col="1" row="0"/>
                 <Label
                   :text="peer.mine"
@@ -123,16 +129,27 @@ export default {
     };
   },
   mounted() {
-    global.eventBus = this
-    global.eventBus.$on('payment', bolt11 => {
+    global.eventBus = this;
+    global.eventBus.$on("payment", bolt11 => {
       this.callRemote("listsendpays", [bolt11]).then(
         data => {
-          this.payments.unshift(data.content.toJSON().result.payments[0]);
+          try {
+            this.payments.unshift(data.content.toJSON().result.payments[0]);
+          } catch(e) {}
         },
         err => (this.msg = `${err}: ${new Date().toString()}`)
       );
-
-    })
+    });
+    global.eventBus.$on("invoice", label => {
+      this.callRemote("listinvoices", [label]).then(
+        data => {
+          try {
+            this.invoices.unshift(data.content.toJSON().result.invoices[0]);
+          } catch(e) {}
+        },
+        err => (this.msg = `${err}: ${new Date().toString()}`)
+      );
+    });
   },
   methods: {
     getFunds() {

@@ -8,7 +8,12 @@
         <TextField v-model="sats" hint="Amount(sats)" keyboardType="number"/>
         <TextField v-model="description" hint="Description"/>
         <Button text="Get Invoice" @tap="getInvoice"/>
-        <FlexboxLayout v-if="this.bolt11.length"  flexDirection="column-reverse" justifyContent="space-around" alignItems="stretch">
+        <FlexboxLayout
+          v-if="this.bolt11.length"
+          flexDirection="column-reverse"
+          justifyContent="space-around"
+          alignItems="stretch"
+        >
           <Image :src="qrcode" height="300" width="300" alignSelf="center"/>
         </FlexboxLayout>
         <Button v-if="this.bolt11.length" text="Copy" @tap="clip"/>
@@ -35,9 +40,10 @@ export default {
   },
   methods: {
     getInvoice() {
+      const label = Date.now() // TODO: better method
       this.callRemote("invoice", [
         this.sats * 1000,
-        Date.now(),
+        label,
         this.description
       ]).then(data => {
         const result = data.content.toJSON().result;
@@ -49,6 +55,7 @@ export default {
           .catch(err => {
             console.error(err);
           });
+          global.eventBus.$emit("invoice", label);
       });
     },
     clip() {
