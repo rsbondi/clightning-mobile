@@ -50,6 +50,7 @@ export default {
             this.amount = "";
           });
         }
+        global.eventBus.$emit('payment', result.bolt11)
       }, console.log);
     }
   },

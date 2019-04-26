@@ -122,7 +122,18 @@ export default {
       balance: ""
     };
   },
-  mounted() {},
+  mounted() {
+    global.eventBus = this
+    global.eventBus.$on('payment', bolt11 => {
+      this.callRemote("listsendpays", [bolt11]).then(
+        data => {
+          this.payments.unshift(data.content.toJSON().result.payments[0]);
+        },
+        err => (this.msg = `${err}: ${new Date().toString()}`)
+      );
+
+    })
+  },
   methods: {
     getFunds() {
       this.callRemote("listfunds").then(data => {
