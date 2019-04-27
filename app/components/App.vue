@@ -3,7 +3,7 @@
     <ActionBar flat="true">
       <Label :text="balance" class="balance"/>
       <ActionItem @tap="onTapPay" text="Paste Payment" android.position="popup"/>
-      <ActionItem @tap="onTapPayScan" text="Scan Payment" android.position="popup"/>
+      <ActionItem @tap="scanQrCode" text="Scan Payment" android.position="popup"/>
       <ActionItem @tap="onTapInvoice" text="Create Invoice" android.position="popup"/>
       <ActionItem @tap="onTapSettings" text="Settings" android.position="popup"/>
     </ActionBar>
@@ -106,12 +106,12 @@
 <script>
 import Settings from "./Settings";
 import Pay from "./Pay";
-import PayScan from "./PayScan";
 import Invoice from "./Invoice";
 import InvoiceDetail from "./InvoiceDetail";
 import PaymentDetail from "./PaymentDetail";
 import PeerDetail from "./PeerDetail";
 import Util from "./util";
+import { BarcodeScanner } from "nativescript-barcodescanner";
 
 export default {
   mixins: [Util],
@@ -135,7 +135,7 @@ export default {
         data => {
           try {
             this.payments.unshift(data.content.toJSON().result.payments[0]);
-          } catch(e) {}
+          } catch (e) {}
         },
         err => (this.msg = `${err}: ${new Date().toString()}`)
       );
@@ -145,7 +145,7 @@ export default {
         data => {
           try {
             this.invoices.unshift(data.content.toJSON().result.invoices[0]);
-          } catch(e) {}
+          } catch (e) {}
         },
         err => (this.msg = `${err}: ${new Date().toString()}`)
       );
@@ -165,9 +165,6 @@ export default {
     },
     onTapPay() {
       this.$navigateTo(Pay);
-    },
-    onTapPayScan() {
-      this.$navigateTo(PayScan);
     },
     onTapInvoice() {
       this.$navigateTo(Invoice);
@@ -245,6 +242,38 @@ export default {
         );
         this.rpcCommand = "";
       });
+    },
+    scanQrCode() {
+      const scanner = new BarcodeScanner();
+      this.loaded = true;
+      scanner
+        .scan({
+          formats: "QR_CODE",
+          cancelLabel: "Close",
+          cancelLabelBackgroundColor: "#FFFFFF",
+          message: "Use the volume buttons for extra light",
+          showFlipCameraButton: false,
+          preferFrontCamera: false,
+          showTorchButton: true,
+          beepOnScan: true,
+          torchOn: false,
+          closeCallback: () => {
+            console.log("Scanner closed");
+          },
+          resultDisplayDuration: 500,
+          orientation: "portrait",
+          openSettingsIfPermissionWasPreviouslyDenied: true
+        })
+        .then(
+          result => {
+            this.$navigateTo(Pay, {
+              props: { scantext: result.text }
+            });
+          },
+          errorMessage => {
+            console.log("No scan. " + errorMessage);
+          }
+        );
     }
   }
 };

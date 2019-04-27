@@ -8,6 +8,7 @@ export default {
             return android.util.Base64.encodeToString(data,android.util.Base64.DEFAULT);
         },
         callRemote(method, params) {
+            if(!global.remoteUrl) return
             const base64String = this.base64Encode(`${global.remoteUser}:${global.remotePassword}`)
             try {
                 return https.request({

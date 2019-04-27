@@ -18,6 +18,7 @@ const clipboard = require("nativescript-clipboard");
 
 export default {
   mixins: [Util],
+  props: ["scantext"],
   data() {
     return {
       bolt11: "",
@@ -28,13 +29,16 @@ export default {
   },
   methods: {
     checkClip() {
-      clipboard.getText().then(clip => {
-        if(clip) {
-          if(["lnbcrt", "lnbc", "lntb", "lnsb"].filter(l => clip.indexOf(l) === 0).length) {
-            this.bolt11 = clip
+      if(this.$props.scantext)
+        this.bolt11 = this.$props.scantext
+      else
+        clipboard.getText().then(clip => {
+          if(clip) {
+            if(["lnbcrt", "lnbc", "lntb", "lnsb"].filter(l => clip.indexOf(l) === 0).length) {
+              this.bolt11 = clip
+            }
           }
-        }
-      })
+        })
     },
     payInvoice() {
       this.callRemote("pay", [

@@ -23,7 +23,6 @@ The `appPassword` is the local password to unlock the app.
 Currently there is some basic payment, connection and invoice information.  Any connections must already be set from your node or from the app using the DEBUG tab which gives you full RPC access.
 
 ## To be implemented
-* QR code scanner for payements, currently clipboard only
 * Channel management
 * Debug helpers
 
