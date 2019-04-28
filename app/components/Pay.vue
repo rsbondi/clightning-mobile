@@ -43,10 +43,12 @@ export default {
     payInvoice() {
       this.callRemote("pay", [
         this.bolt11,
-        this.hasAmount ? null : this.amount,
-        this.label
+        this.hasAmount ? null : this.amount * 1000, // keep in sats
+        this.label.replace(/'/g, '') // workaraound for https://github.com/ElementsProject/lightning/issues/2597
       ]).then(data => {
-        const result = data.content.toJSON().result;
+        const response = data.content.toJSON()
+        if(response.error) return alert(response.error.message)
+        const result = response.result;
         if (result.status == "complete") {
           alert(`payment success for ${result.amount_msat}`).then(() => {
             this.bolt11 = "";
@@ -66,7 +68,7 @@ export default {
           const result = data.content.toJSON().result;
           if (result.msatoshi) {
             this.hasAmount = true;
-            this.amount = result.msatoshi;
+            this.amount = result.msatoshi / 1000;
             this.label = result.description;
           }
         });
