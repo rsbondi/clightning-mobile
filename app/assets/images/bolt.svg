@@ -1,0 +1,4 @@
+<svg width="500px" height="500px" viewBox="0 0 1000 1000" fill="#53ba82">
+  <circle fill="#0066cc" stroke="#0066cc" cx="500" cy="500" r="300"></circle>
+  <polygon points="300,1000 430,450 500,460 700,0 570,550 500,540" />
+</svg>
