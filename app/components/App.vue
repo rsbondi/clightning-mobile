@@ -6,6 +6,7 @@
       <ActionItem @tap="scanQrCode" text="Scan Payment" android.position="popup"/>
       <ActionItem @tap="onTapInvoice" text="Create Invoice" android.position="popup"/>
       <ActionItem @tap="onTapSettings" text="Settings" android.position="popup"/>
+      <ActionItem @tap="onNode" text="Node" android.position="popup"/>
     </ActionBar>
     <GridLayout columns="*" rows="1*">
       <TabView col="0" row="0" :selectedIndex="selectedIndex" @selectedIndexChange="indexChange">
@@ -106,6 +107,7 @@
 <script>
 import Settings from "./Settings";
 import Pay from "./Pay";
+import Node from "./Node";
 import Invoice from "./Invoice";
 import InvoiceDetail from "./InvoiceDetail";
 import PaymentDetail from "./PaymentDetail";
@@ -159,6 +161,9 @@ export default {
           .result.channels.reduce((o, c) => o + c.channel_sat, 0);
         this.balance = `${balance} sats`;
       });
+    },
+    onNode() {
+      this.$navigateTo(Node);
     },
     onTapSettings() {
       this.$navigateTo(Settings);
