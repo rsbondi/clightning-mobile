@@ -24,6 +24,7 @@ Currently there is some basic payment, connection and invoice information.  Any 
 
 ## To be implemented
 * Channel management
+* Chain funds (withdraw, newaddress)
 * Debug helpers
 
 ## Screenshots

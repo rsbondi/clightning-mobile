@@ -119,7 +119,6 @@ export default {
   mixins: [Util],
   data() {
     return {
-      msg: "WTF World!",
       peers: [],
       payments: [],
       invoices: [],
@@ -139,7 +138,7 @@ export default {
             this.payments.unshift(data.content.toJSON().result.payments[0]);
           } catch (e) {}
         },
-        err => (this.msg = `${err}: ${new Date().toString()}`)
+        err => (console.log(`${err}: ${new Date().toString()}`))
       );
     });
     global.eventBus.$on("invoice", label => {
@@ -149,7 +148,7 @@ export default {
             this.invoices.unshift(data.content.toJSON().result.invoices[0]);
           } catch (e) {}
         },
-        err => (this.msg = `${err}: ${new Date().toString()}`)
+        err => (console.log(`${err}: ${new Date().toString()}`))
       );
     });
   },
@@ -190,22 +189,24 @@ export default {
       this.selectedIndex = args.value;
       switch (this.selectedIndex) {
         case 0:
-          this.callRemote("listsendpays").then(
-            data => {
-              this.payments = data.content.toJSON().result.payments.reverse();
-            },
-            err => (this.msg = `${err}: ${new Date().toString()}`)
-          );
+          if(!this.payments.length)
+            this.callRemote("listsendpays").then(
+              data => {
+                this.payments = data.content.toJSON().result.payments.reverse();
+              },
+              err => (console.log(`${err}: ${new Date().toString()}`))
+            );
           this.getFunds();
           break;
 
         case 1:
-          this.callRemote("listinvoices").then(
-            data => {
-              this.invoices = data.content.toJSON().result.invoices.reverse();
-            },
-            err => (this.msg = `${err}: ${new Date().toString()}`)
-          );
+          if(!this.invoices.length)
+            this.callRemote("listinvoices").then(
+              data => {
+                this.invoices = data.content.toJSON().result.invoices.reverse();
+              },
+              err => (console.log(`${err}: ${new Date().toString()}`))
+            );
 
           break;
 
@@ -228,7 +229,7 @@ export default {
                 return peer;
               });
             },
-            err => (this.msg = `${err}: ${new Date().toString()}`)
+            err => (console.log(`${err}: ${new Date().toString()}`))
           );
 
           break;
