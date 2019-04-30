@@ -42,7 +42,6 @@
 
 <script>
 import Util from "./util";
-const clipboard = require("nativescript-clipboard");
 // const QRCode = require("qrcode"); // TODO: need some sort of server change to get ip for qr
 
 export default {

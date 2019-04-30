@@ -7,6 +7,7 @@
       <ActionItem @tap="onTapInvoice" text="Create Invoice" android.position="popup"/>
       <ActionItem @tap="onTapSettings" text="Settings" android.position="popup"/>
       <ActionItem @tap="onNode" text="Node" android.position="popup"/>
+      <ActionItem v-show="selectedIndex < 3" @tap="refresh" text="Refresh" android.position="popup"/>
     </ActionBar>
     <GridLayout columns="*" rows="1*">
       <TabView col="0" row="0" :selectedIndex="selectedIndex" @selectedIndexChange="indexChange">
@@ -161,6 +162,9 @@ export default {
         this.balance = `${balance} sats`;
       });
     },
+    refresh() {
+      this.indexChange({value: this.selectedIndex});
+    },
     onNode() {
       this.$navigateTo(Node);
     },
@@ -186,10 +190,11 @@ export default {
       this.$navigateTo(PeerDetail, { props: { peer: event.item } });
     },
     indexChange(args) {
+      const refresh = this.selectedIndex == args.value;
       this.selectedIndex = args.value;
       switch (this.selectedIndex) {
         case 0:
-          if(!this.payments.length)
+          if(!this.payments.length || refresh)
             this.callRemote("listsendpays").then(
               data => {
                 this.payments = data.content.toJSON().result.payments.reverse();
@@ -200,7 +205,7 @@ export default {
           break;
 
         case 1:
-          if(!this.invoices.length)
+          if(!this.invoices.length || refresh)
             this.callRemote("listinvoices").then(
               data => {
                 this.invoices = data.content.toJSON().result.invoices.reverse();
