@@ -8,6 +8,7 @@
       <ActionItem @tap="onTapSettings" text="Settings" android.position="popup"/>
       <ActionItem @tap="onNode" text="Node" android.position="popup"/>
       <ActionItem v-show="selectedIndex < 3" @tap="refresh" text="Refresh" android.position="popup"/>
+      <ActionItem @tap="about" text="About" android.position="popup"/>
     </ActionBar>
     <GridLayout columns="*" rows="1*">
       <TabView col="0" row="0" :selectedIndex="selectedIndex" @selectedIndexChange="indexChange">
@@ -107,6 +108,7 @@
 
 <script>
 import Settings from "./Settings";
+import About from "./About";
 import Pay from "./Pay";
 import Node from "./Node";
 import Invoice from "./Invoice";
@@ -115,6 +117,8 @@ import PaymentDetail from "./PaymentDetail";
 import PeerDetail from "./PeerDetail";
 import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
+
+global.VERSION = '0.0.1'
 
 export default {
   mixins: [Util],
@@ -164,6 +168,9 @@ export default {
     },
     refresh() {
       this.indexChange({value: this.selectedIndex});
+    },
+    about() {
+      this.$navigateTo(About);
     },
     onNode() {
       this.$navigateTo(Node);

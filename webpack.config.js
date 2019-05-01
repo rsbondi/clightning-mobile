@@ -92,7 +92,7 @@ module.exports = env => {
             hashSalt
         },
         resolve: {
-            extensions: [".vue", ".ts", ".js", ".scss", ".css"],
+            extensions: [".vue", ".ts", ".js", ".css"],
             // Resolve {N} system modules from tns-core-modules
             modules: [
                 resolve(__dirname, "node_modules/tns-core-modules"),
@@ -188,15 +188,6 @@ module.exports = env => {
                     'nativescript-dev-webpack/style-hot-loader',
                     'nativescript-dev-webpack/apply-css-loader.js',
                     { loader: "css-loader", options: { url: false } },
-                ],
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    'nativescript-dev-webpack/style-hot-loader',
-                    'nativescript-dev-webpack/apply-css-loader.js',
-                    { loader: "css-loader", options: { url: false } },
-                    "sass-loader",
                 ],
             },
             {
