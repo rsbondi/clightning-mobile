@@ -22,7 +22,7 @@ You will also need a registered domain name and a valid certificate from a recog
 
 1. Set up c-lightning from above link
 1. Install certificate on same machine
-1. Build the plugin from above link
+1. Build the plugin from above link or use [linux-x64 binary](https://moonbreeze.richardbondi.net/remote_plugin)
 1. Configure c-lightning to use the plugin in the appropriate config file or add options to the command line and point to the installed certificate.
 1. Install mobile app on mobile device(not yet deployed, currently only by running repo)
 
