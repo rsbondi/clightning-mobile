@@ -4,7 +4,7 @@ A mobile android<span id="a1">[[1]](#f1)</span> app to control your c-lightning 
 all wallet functionality is in your node. This app also provides full RPC access for power users.
 
 There were several motivations for creating this.  I wanted more of a power user app for my own purpose.  I also wanted a proof of concept fot the [remoteRPC](https://github.com/rsbondi/clightning-go-plugin/tree/master/remoteRPC)
-plugin as it just feels more integrated than having a seperate server to set up, install and launch, with the plugin, you just configure additional parameters for your existing c-lightning and let it automatically launch.  I feel the plugin could open new doors for other developers as well.
+plugin as it just feels more integrated than having a seperate server to set up, install and launch, running its own protocol, where the plugin uses existing c-lightning JSON-RPC protocol and you just configure additional parameters for your existing c-lightning and let it automatically launch.  I feel the plugin could open new doors for other developers as well.
 
 ## Warning: #reckless
 
@@ -24,7 +24,7 @@ You will also need a registered domain name and a valid certificate from a recog
 1. Install certificate on same machine
 1. Build the plugin from above link or use [linux-x64 binary](https://moonbreeze.richardbondi.net/remote_plugin)
 1. Configure c-lightning to use the plugin in the appropriate config file or add options to the command line and point to the installed certificate.
-1. Install mobile app on mobile device(not yet deployed, currently only by running repo)
+1. Install mobile app on mobile device for [apk](https://moonbreeze.richardbondi.net/clightningclient.apk) or clone repo and run
 
 feel free to DM me on [twitter](https://twitter.com/r_bondi) if you need help
 
