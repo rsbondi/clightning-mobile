@@ -15,23 +15,22 @@
         <TabViewItem title="Payments">
           <ListView for="pay in payments" @itemTap="onTapPaymentList">
             <v-template>
-              <GridLayout columns="1* 1* 1*" rows="1*" class="list">
+              <GridLayout columns="3* 1*" rows="1* 1*" class="list">
                 <Label
                   :text="(new Date(pay.created_at * 1000).toString())"
-                  height="40"
+                  height="20"
                   col="0"
                   row="0"
-                  class="gap"
                 />
-                <Label :text="pay.label || pay.destination" height="40" col="1" row="0"/>
                 <Label
                   :text="pay.msatoshi/ 1000"
                   :class="pay.status == 'failed' ? `failed` : `spent`"
                   style.textAlignment="right"
-                  height="40"
-                  col="2"
+                  height="20"
+                  col="1"
                   row="0"
                 />
+                <Label :text="pay.label || pay.destination" height="30" col="0" row="1" colspan="2" class="desc" />
               </GridLayout>
             </v-template>
           </ListView>
@@ -356,4 +355,9 @@ TextView {
   border-color: transparent;
   color: #888;
 }
+
+.desc {
+  color: #444
+}
+
 </style>
