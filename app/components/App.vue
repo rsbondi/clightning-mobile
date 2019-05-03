@@ -118,7 +118,7 @@ import PeerDetail from "./PeerDetail";
 import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 
-global.VERSION = '0.0.1'
+global.VERSION = '0.0.2-WIP'
 
 export default {
   mixins: [Util],
@@ -131,7 +131,8 @@ export default {
       rpcCommand: "",
       rpcResponse: "",
       selectedInvoice: {},
-      balance: ""
+      balance: "",
+      listLoaded: {pays: 0, invoices: 0, peers: 0}
     };
   },
   mounted() {
@@ -201,10 +202,11 @@ export default {
       this.selectedIndex = args.value;
       switch (this.selectedIndex) {
         case 0:
-          if(!this.payments.length || refresh)
+          if(!this.listLoaded.pays || refresh)
             this.callRemote("listsendpays").then(
               data => {
                 this.payments = data.content.toJSON().result.payments.reverse();
+                this.listLoaded.pays = 1
               },
               err => (console.log(`${err}: ${new Date().toString()}`))
             );
@@ -212,10 +214,11 @@ export default {
           break;
 
         case 1:
-          if(!this.invoices.length || refresh)
+          if(!this.listLoaded.invoices || refresh)
             this.callRemote("listinvoices").then(
               data => {
                 this.invoices = data.content.toJSON().result.invoices.reverse();
+                this.listLoaded.invoices = 1
               },
               err => (console.log(`${err}: ${new Date().toString()}`))
             );
@@ -223,26 +226,27 @@ export default {
           break;
 
         case 2:
-          this.callRemote("listpeers").then(
-            data => {
-              this.peers = data.content.toJSON().result.peers.map(peer => {
-                if (peer.channels.length) {
-                  const mine = Math.floor(
-                    peer.channels[0].msatoshi_to_us / 1000
-                  );
-                  peer.mine = mine;
-                  peer.theirs = Math.floor(
-                    peer.channels[0].msatoshi_total / 1000 - mine
-                  );
-                } else {
-                  peers.mine = "";
-                  peers.theirs = "";
-                }
-                return peer;
-              });
-            },
-            err => (console.log(`${err}: ${new Date().toString()}`))
-          );
+          if(!this.listLoaded.peers || refresh)
+            this.callRemote("listpeers").then(
+              data => {
+                this.peers = data.content.toJSON().result.peers.map(peer => {
+                  if (peer.channels.length) {
+                    const mine = Math.floor(
+                      peer.channels[0].msatoshi_to_us / 1000
+                    );
+                    peer.mine = mine;
+                    peer.theirs = Math.floor(
+                      peer.channels[0].msatoshi_total / 1000 - mine
+                    );
+                  } else {
+                    peers.mine = "";
+                    peers.theirs = "";
+                  }
+                  return peer;
+                });
+              },
+              err => (console.log(`${err}: ${new Date().toString()}`))
+            );
 
           break;
       }

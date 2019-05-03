@@ -5,13 +5,15 @@
     </ActionBar>
     <ScrollView>
       <StackLayout>
-        <!-- <FlexboxLayout
+        <FlexboxLayout
           flexDirection="column-reverse"
           justifyContent="space-around"
           alignItems="stretch"
         >
           <Image :src="qrcode" height="300" width="300" alignSelf="center"/>
-        </FlexboxLayout> -->
+        </FlexboxLayout>
+        <TextView :text="connectString" />
+        <Button text="Copy" @tap="clip"/>
         <WrapLayout>
 
           <Label class="label" text="alias" width="30%"/>
@@ -42,14 +44,16 @@
 
 <script>
 import Util from "./util";
-// const QRCode = require("qrcode"); // TODO: need some sort of server change to get ip for qr
+const QRCode = require("qrcode");
+const clipboard = require("nativescript-clipboard");
 
 export default {
   mixins: [Util],
   data() {
     return {
       qrcode: "",
-      info: {}
+      info: {},
+      connectString: ""
     };
   },
   methods: {
@@ -57,14 +61,20 @@ export default {
       this.callRemote("getinfo").then(data => {
         const result = data.content.toJSON().result;
         this.info = result;
-        // QRCode.toDataURL(result.id)
-        //   .then(id => {
-        //     this.qrcode = id;
-        //   })
-        //   .catch(err => {
-        //     console.error(err);
-        //   });
+        const nohttps = global.remoteUrl.split('//')[1]
+        const noport = nohttps.split(':')[0]
+        this.connectString = `${result.id}@${noport}:${result.binding[0].port}`
+        QRCode.toDataURL(this.connectString)
+          .then(id => {
+            this.qrcode = id;
+          })
+          .catch(err => {
+            console.error(err);
+          });
       });
+    },
+    clip() {
+      clipboard.setText(this.connectString).then(function() {}); // TODO: toast
     }
   }
 };
