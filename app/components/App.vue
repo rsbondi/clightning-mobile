@@ -238,8 +238,8 @@ export default {
                       peer.channels[0].msatoshi_total / 1000 - mine
                     );
                   } else {
-                    peers.mine = "";
-                    peers.theirs = "";
+                    peer.mine = "";
+                    peer.theirs = "";
                   }
                   return peer;
                 });
