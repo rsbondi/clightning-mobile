@@ -117,7 +117,7 @@ import PeerDetail from "./PeerDetail";
 import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 
-global.VERSION = '0.0.2-WIP'
+global.VERSION = '0.0.2'
 
 export default {
   mixins: [Util],
