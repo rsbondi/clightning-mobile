@@ -61,9 +61,13 @@ export default {
       this.callRemote("getinfo").then(data => {
         const result = data.content.toJSON().result;
         this.info = result;
-        const nohttps = global.remoteUrl.split('//')[1]
-        const noport = nohttps.split(':')[0]
-        this.connectString = `${result.id}@${noport}:${result.binding[0].port}`
+        if(result.address.length) {
+          this.connectString = `${result.id}@${result.address[0].address}:${result.address[0].port}`
+        } else {
+          const nohttps = global.remoteUrl.split('//')[1]
+          const noport = nohttps.split(':')[0]
+          this.connectString = `${result.id}@${noport}:${result.binding[0].port}`
+        }
         QRCode.toDataURL(this.connectString)
           .then(id => {
             this.qrcode = id;
