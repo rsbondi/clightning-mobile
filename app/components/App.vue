@@ -38,24 +38,24 @@
         <TabViewItem title="Invoices">
           <ListView for="inv in invoices" @itemTap="onTapInvoiceList">
             <v-template>
-              <GridLayout columns="3* 5* 2*" rows="1*" class="list">
+              <GridLayout columns="3* 1*" rows="1* 1*" class="list">
                 <Label
                   :text="(new Date((inv.paid_at ? inv.paid_at : inv.expires_at) *1000).toString())"
                   :class="inv.status == 'unpaid' ? 'spent' :  inv.status == 'expired' ? 'spent failed' : ''"
-                  height="40"
+                  height="20"
                   col="0"
                   row="0"
                   class="gap"
                 />
-                <Label :text="inv.description" height="40" col="1" row="0"/>
                 <Label
                   :text="inv.msatoshi/1000"
                   :class="inv.status == 'paid' ? 'mine' : inv.status == 'expired' ? 'failed' : ''"
                   style.textAlignment="right"
-                  height="40"
-                  col="2"
+                  height="20"
+                  col="1"
                   row="0"
                 />
+                <Label :text="inv.description" height="30" col="0" row="1" colspan="2" class="desc" />
               </GridLayout>
             </v-template>
           </ListView>
@@ -63,7 +63,7 @@
         <TabViewItem title="Channels">
           <ListView for="peer in peers" @itemTap="onTapPeerList">
             <v-template>
-              <GridLayout columns="1* 1* 1*" rows="1*" class="list">
+              <GridLayout columns="1* 1* 1*" rows="1*" class="list chan">
                 <Label
                   :class="peer.connected ? '' : 'failed'"
                   :text="peer.id"
@@ -316,6 +316,10 @@ ActionBar label {
   padding-left: 5;
   padding-right: 5;
   padding-top: 10;
+}
+
+.chan {
+  padding-top: 20;
 }
 
 .spent {
