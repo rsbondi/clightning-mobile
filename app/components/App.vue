@@ -1,7 +1,10 @@
 <template>
   <Page>
     <ActionBar flat="true">
-      <Label :text="balance" class="balance"/>
+      <StackLayout>
+        <Label :text="balance" class="balance"/>
+        <Label :text="onchain" class="balance onchain"/>
+      </StackLayout>
       <ActionItem @tap="onTapPay" text="Paste Payment" android.position="popup"/>
       <ActionItem @tap="scanQrCode" text="Scan Payment" android.position="popup"/>
       <ActionItem @tap="onTapInvoice" text="Create Invoice" android.position="popup"/>
@@ -117,7 +120,7 @@ import PeerDetail from "./PeerDetail";
 import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 
-global.VERSION = '0.0.2'
+global.VERSION = '0.0.3-WIP'
 
 export default {
   mixins: [Util],
@@ -131,6 +134,7 @@ export default {
       rpcResponse: "",
       selectedInvoice: {},
       balance: "",
+      onchain: 0,
       listLoaded: {pays: 0, invoices: 0, peers: 0}
     };
   },
@@ -160,10 +164,10 @@ export default {
   methods: {
     getFunds() {
       this.callRemote("listfunds").then(data => {
-        const balance = data.content
-          .toJSON()
-          .result.channels.reduce((o, c) => o + c.channel_sat, 0);
+        const result = data.content.toJSON().result
+        const balance = result.channels.reduce((o, c) => o + c.channel_sat, 0);
         this.balance = `${balance} sats`;
+        this.onchain = result.outputs.reduce((o, c) => o + c.value, 0);
       });
     },
     refresh() {
@@ -346,10 +350,17 @@ ActionBar label {
   background-color: #53ba82;
   color: whitesmoke;
   font-size: 24;
-  padding: 8;
+  padding: 8 8 0 8;
   text-align: center;
   vertical-align: middle;
   width: 100%;
+}
+
+.onchain {
+  font-size: 12;
+  font-style: italic;
+  padding: 0 8 8 8;
+  height: 20
 }
 
 TextView {
