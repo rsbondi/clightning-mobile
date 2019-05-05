@@ -5,12 +5,14 @@
         <Label :text="balance" class="balance"/>
         <Label :text="onchain" class="balance onchain"/>
       </StackLayout>
+      <ActionItem v-show="selectedIndex < 3" @tap="refresh" android.position="actionBar">
+        <Label class="action" text="⟳" />
+      </ActionItem>
       <ActionItem @tap="onTapPay" text="Paste Payment" android.position="popup"/>
       <ActionItem @tap="scanQrCode" text="Scan Payment" android.position="popup"/>
       <ActionItem @tap="onTapInvoice" text="Create Invoice" android.position="popup"/>
       <ActionItem @tap="onTapSettings" text="Settings" android.position="popup"/>
       <ActionItem @tap="onNode" text="Node" android.position="popup"/>
-      <ActionItem v-show="selectedIndex < 3" @tap="refresh" text="Refresh" android.position="popup"/>
       <ActionItem @tap="about" text="About" android.position="popup"/>
     </ActionBar>
     <GridLayout columns="*" rows="1*">
@@ -373,6 +375,10 @@ TextView {
 
 .desc {
   color: #444
+}
+
+.action {
+  font-size: 32;
 }
 
 </style>
