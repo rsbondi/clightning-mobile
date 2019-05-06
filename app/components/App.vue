@@ -204,6 +204,7 @@ export default {
     },
     indexChange(args) {
       const refresh = this.selectedIndex == args.value;
+      if(refresh || !~this.selectedIndex) this.getFunds()
       this.selectedIndex = args.value;
       switch (this.selectedIndex) {
         case 0:
@@ -215,7 +216,6 @@ export default {
               },
               err => (console.log(`${err}: ${new Date().toString()}`))
             );
-          this.getFunds();
           break;
 
         case 1:
