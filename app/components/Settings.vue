@@ -8,6 +8,10 @@
       <TextField v-model="remoteUser" hint="Remote User" autocapitalizationType="none"/>
       <TextField v-model="remotePassword" secure="true" hint="Remote Password"/>
       <TextField v-model="appPassword" secure="true" hint="app Password"/>
+      <WrapLayout>
+        <Label text="Show Custom Tab" width="50%"/>
+        <Switch v-model="showCustom" width="50%"/>
+      </WrapLayout>
       <Button text="Update" @tap="update"/>
     </StackLayout>
   </Page>
@@ -16,6 +20,7 @@
 <script>
 const SecureStorage = require("nativescript-secure-storage").SecureStorage;
 const secureStorage = new SecureStorage();
+const appSettings = require("application-settings");
 
 import App from "./App";
 
@@ -25,7 +30,8 @@ export default {
       remoteUrl: "",
       remoteUser: "",
       remotePassword: "",
-      appPassword: ""
+      appPassword: "",
+      showCustom: false
     };
   },
   methods: {
@@ -42,6 +48,9 @@ export default {
       }
       global.remoteUrl = this.remoteUrl;
       global.remoteUser = this.remoteUser;
+      global.showCustom = this.showCustom;
+      appSettings.setBoolean("showCustom", this.showCustom)
+      
       this.$navigateTo(App);
     }
   },
@@ -55,6 +64,10 @@ export default {
 
       if (typeof user != 'undefined') 
         this.remoteUser = user
+
+      global.showCustom = appSettings.getBoolean("showCustom", false);
+      this.showCustom = global.showCustom;
+
     }, 0)
   }
 };

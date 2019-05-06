@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <Page @navigatedTo="getSettings">
     <ActionBar flat="true">
       <StackLayout>
         <Label :text="balance" class="balance"/>
@@ -105,6 +105,9 @@
             </ScrollView>
           </DockLayout>
         </TabViewItem>
+        <TabViewItem v-if="showCustom" title="Custom">
+          <WebView :src="customHtml" />
+        </TabViewItem>
       </TabView>
     </GridLayout>
   </Page>
@@ -137,7 +140,12 @@ export default {
       selectedInvoice: {},
       balance: "",
       onchain: 0,
-      listLoaded: {pays: 0, invoices: 0, peers: 0}
+      listLoaded: {pays: 0, invoices: 0, peers: 0},
+      showCustom: global.showCustom,
+      customHtml: `<h1>Custom content from plugin</h1>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="50"/>
+</svg>`
     };
   },
   mounted() {
@@ -305,6 +313,9 @@ export default {
             console.log("No scan. " + errorMessage);
           }
         );
+    },
+    getSettings() {
+      this.showCustom = global.showCustom 
     }
   }
 };

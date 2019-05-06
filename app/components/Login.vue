@@ -14,6 +14,7 @@ import Settings from "./Settings";
 
 const SecureStorage = require("nativescript-secure-storage").SecureStorage;
 const secureStorage = new SecureStorage();
+const appSettings = require("application-settings");
 
 let user;
 
@@ -44,8 +45,9 @@ export default {
             global.remotePassword = await secureStorage.get({key: "remotePassword"})
             global.remoteUrl = url
           }
-
         })
+
+        global.showCustom = appSettings.getBoolean("showCustom", false);
       } catch (e) {
         console.log(e);
       }
