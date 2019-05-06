@@ -162,6 +162,10 @@ export default {
         err => (console.log(`${err}: ${new Date().toString()}`))
       );
     });
+    global.eventBus.$on('delinvoice', label => {
+      const inv = this.invoices.filter(i => i.label == label)[0];
+      this.invoices.splice(this.invoices.indexOf(inv), 1);
+    })
   },
   methods: {
     getFunds() {
