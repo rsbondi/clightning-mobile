@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     confirmDelete() {
-      confirm("Are you sure you want to delet this invoice?").then(result => {
+      confirm("Are you sure you want to delete this invoice?").then(result => {
         if(result) {
           this.callRemote("delinvoice", [this.$props.invoice.label, this.$props.invoice.status]).then(data => {
             const result = data.content.toJSON().result

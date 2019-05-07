@@ -168,8 +168,8 @@ export default {
       const inv = this.invoices.filter(i => i.label == label)[0];
       this.invoices.splice(this.invoices.indexOf(inv), 1);
     })
-    global.eventBus.$on('channelopen', peer => {
-      this.callRemote("listpeers").then(
+    global.eventBus.$on('channelopen', peerId => {
+      this.callRemote("listpeers", [peerId]).then(
         data => {
           const peer = data.content.toJSON().result.peers[0];
           const mine = Math.floor(

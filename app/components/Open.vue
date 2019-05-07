@@ -1,10 +1,11 @@
 <template>
   <Page>
     <ActionBar title="Open Channel">
-      <NavigationButton text="Go back" android.systemIcon="ic_menu_back" @tap="$navigateBack"/>
+      <NavigationButton text="Go back"
+android.systemIcon="ic_menu_back" @tap="$navigateBack"/>
     </ActionBar>
     <StackLayout>
-      <TextField hint="id" v-model="nodeId"/>
+      <TextField hint="id" v-model="peerId"/>
       <TextField hint="host" v-model="host"/>
       <TextField hint="port" v-model="port"/>
       <TextField hint="Amount(sat)" v-model="amount"/>
@@ -22,7 +23,7 @@ export default {
   props: ["scantext"],
   data() {
     return {
-      nodeId: "",
+      peerId: "",
       host: "",
       port: "",
       amount: ""
@@ -30,17 +31,19 @@ export default {
   },
   methods: {
     fund() {
-      this.callRemote("fundchannel", [this.nodeId, this.amount]).then(data => {
+      this.callRemote("fundchannel", [this.peerId, this.amount]).then(data => {
         const response = data.content.toJSON();
         if (response.error) return alert(response.error.message);
         const result = response.result;
-        global.eventBus.$emit("channelopen", this.nodeId);
+        global.eventBus.$emit("channelopen", this.peerId);
+        this.$navigateBack()
       }, console.log);
     },
     openChannel() {
-      if(!this.amount || !this.nodeId || !this.host || !this.port)
+      if(!this.amount || !this.peerId || !this.host || !this.port)
         return alert('all fields required')
-      this.callRemote("connect", [this.nodeId, this.host, this.port]).then(data => {
+      this.callRemote("connect", [this.peerId, this.host,
+this.port]).then(data => {
         const response = data.content.toJSON();
         if (response.error) return alert(response.error.message);
         const result = response.result;
