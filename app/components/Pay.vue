@@ -6,8 +6,8 @@
     <StackLayout>
       <TextView hint="Paste payment request here" v-model="bolt11"/>
       <TextField hint="Label" v-model="label"/>
-      <TextField hint="Amount(msat)" v-model="amount" :editable="!hasAmount"/>
-      <Button dock="top" text="Pay" @tap="payInvoice"/>
+      <TextField hint="Amount(sat)" v-model="amount" :editable="!hasAmount"/>
+      <Button text="Pay" @tap="payInvoice"/>
     </StackLayout>
   </Page>
 </template>

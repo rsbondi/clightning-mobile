@@ -10,6 +10,7 @@
       </ActionItem>
       <ActionItem @tap="onTapPay" text="Paste Payment" android.position="popup"/>
       <ActionItem @tap="scanQrCode" text="Scan Payment" android.position="popup"/>
+      <ActionItem v-show="selectedIndex == 2" @tap="newChannel" text="Open Channel" android.position="popup"/>
       <ActionItem @tap="onTapInvoice" text="Create Invoice" android.position="popup"/>
       <ActionItem @tap="onTapSettings" text="Settings" android.position="popup"/>
       <ActionItem @tap="onNode" text="Node" android.position="popup"/>
@@ -114,6 +115,7 @@
 import Settings from "./Settings";
 import About from "./About";
 import Pay from "./Pay";
+import Open from "./Open";
 import Node from "./Node";
 import Invoice from "./Invoice";
 import InvoiceDetail from "./InvoiceDetail";
@@ -166,6 +168,20 @@ export default {
       const inv = this.invoices.filter(i => i.label == label)[0];
       this.invoices.splice(this.invoices.indexOf(inv), 1);
     })
+    global.eventBus.$on('channelopen', peer => {
+      this.callRemote("listpeers").then(
+        data => {
+          const peer = data.content.toJSON().result.peers[0];
+          const mine = Math.floor(
+            peer.channels[0].msatoshi_to_us / 1000
+          );
+          peer.mine = mine;
+          peer.theirs = Math.floor(
+            peer.channels[0].msatoshi_total / 1000 - mine
+          );
+          this.peers.push(peer);
+        }, console.log)
+    })
   },
   methods: {
     getFunds() {
@@ -175,6 +191,9 @@ export default {
         this.balance = `${balance} sats`;
         this.onchain = result.outputs.reduce((o, c) => o + c.value, 0);
       });
+    },
+    newChannel() {
+      this.$navigateTo(Open);
     },
     refresh() {
       this.indexChange({value: this.selectedIndex});
@@ -383,6 +402,7 @@ TextView {
 
 .action {
   font-size: 32;
+  padding-bottom: 10;
 }
 
 </style>
