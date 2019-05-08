@@ -77,11 +77,14 @@
                   col="0"
                   row="0"
                 />
-                <Label :text="peer.theirs" style.textAlignment="right" height="40" col="1" row="0"/>
+                <Label :text="peer.theirs" 
+                  style.textAlignment="right" height="40" col="1" row="0"
+                  :class="peer.channel.state == 'CHANNELD_NORMAL' ? '' : 'failed'"
+                />
                 <Label
                   :text="peer.mine"
                   style.textAlignment="right"
-                  class="mine"
+                  :class="peer.channel.state == 'CHANNELD_NORMAL' ? 'mine' : 'failed'"
                   height="40"
                   col="2"
                   row="0"
@@ -169,18 +172,18 @@ export default {
       this.invoices.splice(this.invoices.indexOf(inv), 1);
     })
     global.eventBus.$on('channelopen', peerId => {
-      this.callRemote("listpeers", [peerId]).then(
-        data => {
-          const peer = data.content.toJSON().result.peers[0];
-          const mine = Math.floor(
-            peer.channels[0].msatoshi_to_us / 1000
-          );
-          peer.mine = mine;
-          peer.theirs = Math.floor(
-            peer.channels[0].msatoshi_total / 1000 - mine
-          );
-          this.peers.push(peer);
-        }, console.log)
+      // this.callRemote("listpeers", [peerId]).then(
+      //   data => {
+      //     const peer = data.content.toJSON().result.peers[0];
+      //     const mine = Math.floor(
+      //       peer.channels[0].msatoshi_to_us / 1000
+      //     );
+      //     peer.mine = mine;
+      //     peer.theirs = Math.floor(
+      //       peer.channels[0].msatoshi_total / 1000 - mine
+      //     );
+      //     this.peers.push(peer);
+      //   }, console.log)
     })
   },
   methods: {
@@ -257,21 +260,23 @@ export default {
           if(!this.listLoaded.peers || refresh)
             this.callRemote("listpeers").then(
               data => {
-                this.peers = data.content.toJSON().result.peers.map(peer => {
-                  if (peer.channels.length) {
+                this.peers = data.content.toJSON().result.peers.reduce((o, peer) => {
+                  peer.channels.forEach(channel => {
                     const mine = Math.floor(
-                      peer.channels[0].msatoshi_to_us / 1000
+                      channel.msatoshi_to_us / 1000
                     );
-                    peer.mine = mine;
-                    peer.theirs = Math.floor(
-                      peer.channels[0].msatoshi_total / 1000 - mine
+                    const theirs = Math.floor(
+                      channel.msatoshi_total / 1000 - mine
                     );
-                  } else {
-                    peer.mine = "";
-                    peer.theirs = "";
-                  }
-                  return peer;
-                });
+                    o.push(Object.assign({mine: mine, theirs: theirs, channel: channel, original: peer}, peer)) 
+                    // TODO: too tightly coupled, clean up peer/channel relation for here and detail
+                  }) 
+                  return o;
+                }, []);
+                this.peers.sort((a, b) => {
+                  if(''+a.channel.state == ''+b.channel.state) return 0
+                  else return a.channel.state == 'CHANNELD_NORMAL' ? -1 : b.channel.state == 'CHANNELD_NORMAL' ? 1 : 0
+                })
               },
               err => (console.log(`${err}: ${new Date().toString()}`))
             );
