@@ -172,18 +172,18 @@ export default {
       this.invoices.splice(this.invoices.indexOf(inv), 1);
     })
     global.eventBus.$on('channelopen', peerId => {
-      // this.callRemote("listpeers", [peerId]).then(
-      //   data => {
-      //     const peer = data.content.toJSON().result.peers[0];
-      //     const mine = Math.floor(
-      //       peer.channels[0].msatoshi_to_us / 1000
-      //     );
-      //     peer.mine = mine;
-      //     peer.theirs = Math.floor(
-      //       peer.channels[0].msatoshi_total / 1000 - mine
-      //     );
-      //     this.peers.push(peer);
-      //   }, console.log)
+      this.callRemote("listpeers", [peerId]).then(
+        data => {
+          const peer = data.content.toJSON().result.peers[0];
+          const channel = peer.channels[peer.channels.length-1]
+          const mine = Math.floor(
+            channel.msatoshi_to_us / 1000
+          );
+          const theirs = Math.floor(
+            channel.msatoshi_total / 1000 - mine
+          );
+          this.peers.unshift(Object.assign({mine: mine, theirs: theirs, channel: channel, original: peer}, peer)) 
+        }, console.log)
     })
   },
   methods: {
