@@ -1,6 +1,6 @@
 {
   "name": "clightning-mobile",
-  "version": "0.0.3-WIP",
+  "version": "0.0.3",
   "description": "A native mobile application for remote access to a clightning node",
   "author": "Richard Bondi",
   "license": "MIT",

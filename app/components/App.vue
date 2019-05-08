@@ -127,7 +127,7 @@ import PeerDetail from "./PeerDetail";
 import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 
-global.VERSION = '0.0.3-WIP'
+global.VERSION = '0.0.3'
 
 export default {
   mixins: [Util],
@@ -387,10 +387,10 @@ ActionBar label {
 }
 
 .onchain {
-  font-size: 12;
+  font-size: 14;
   font-style: italic;
   padding: 0 8 8 8;
-  height: 20
+  height: 24
 }
 
 TextView {
