@@ -62,7 +62,6 @@ export default {
   },
   watch: {
     bolt11(b11) {
-      console.log("watching bolt11");
       if (b11) {
         this.callRemote("decodepay", [this.bolt11]).then(data => {
           const result = data.content.toJSON().result;

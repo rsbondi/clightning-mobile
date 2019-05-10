@@ -6,11 +6,16 @@
         <Label :text="onchain" class="balance onchain"/>
       </StackLayout>
       <ActionItem v-show="selectedIndex < 3" @tap="refresh" android.position="actionBar">
-        <Label class="action" text="⟳" />
+        <Label class="action" text="⟳"/>
       </ActionItem>
       <ActionItem @tap="onTapPay" text="Paste Payment" android.position="popup"/>
       <ActionItem @tap="scanQrCode" text="Scan Payment" android.position="popup"/>
-      <ActionItem v-show="selectedIndex == 2" @tap="newChannel" text="Open Channel" android.position="popup"/>
+      <ActionItem
+        v-show="selectedIndex == 2"
+        @tap="newChannel"
+        text="Open Channel"
+        android.position="popup"
+      />
       <ActionItem @tap="onTapInvoice" text="Create Invoice" android.position="popup"/>
       <ActionItem @tap="onTapSettings" text="Settings" android.position="popup"/>
       <ActionItem @tap="onNode" text="Node" android.position="popup"/>
@@ -36,7 +41,14 @@
                   col="1"
                   row="0"
                 />
-                <Label :text="pay.label || pay.destination" height="30" col="0" row="1" colspan="2" class="desc" />
+                <Label
+                  :text="pay.label || pay.destination"
+                  height="30"
+                  col="0"
+                  row="1"
+                  colspan="2"
+                  class="desc"
+                />
               </GridLayout>
             </v-template>
           </ListView>
@@ -61,7 +73,14 @@
                   col="1"
                   row="0"
                 />
-                <Label :text="inv.description" height="30" col="0" row="1" colspan="2" class="desc" />
+                <Label
+                  :text="inv.description"
+                  height="30"
+                  col="0"
+                  row="1"
+                  colspan="2"
+                  class="desc"
+                />
               </GridLayout>
             </v-template>
           </ListView>
@@ -77,8 +96,12 @@
                   col="0"
                   row="0"
                 />
-                <Label :text="peer.theirs" 
-                  style.textAlignment="right" height="40" col="1" row="0"
+                <Label
+                  :text="peer.theirs"
+                  style.textAlignment="right"
+                  height="40"
+                  col="1"
+                  row="0"
                   :class="peer.channel.state == 'CHANNELD_NORMAL' ? '' : 'failed'"
                 />
                 <Label
@@ -102,6 +125,8 @@
               hint="Enter rpc command"
             />
             <Button dock="top" text="Execute" @tap="execRPC"/>
+            <Button v-show="rpcCommands.length" dock="top" text="Choose Command" @tap="setCommand"/>
+            <ListPicker v-show="rpcCommands.length" dock="top" :items="rpcCommands" selectedIndex="-1" @selectedIndexChange="rpcSelected"/>
             <ScrollView>
               <ScrollView orientation="horizontal">
                 <TextView dock="top" :text="rpcResponse"/>
@@ -127,9 +152,34 @@ import PeerDetail from "./PeerDetail";
 import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 
-global.VERSION = '0.0.3'
+global.VERSION = "0.0.4-WIP";
 
 export default {
+  watch: {
+    rpcCommand(v) {
+      if(typeof v == 'undefined') return;
+      console.log('watching rpcCommand', v)
+      if (this.rpcCommand.length > 1) {
+        this.getHelp().then(h => {
+          console.log('got help', h)
+          const cmd = v.split(" ")[0];
+          if (
+            h.map(h => h.command.split(" ")[0])
+              .filter(c => "" + c == "" + cmd).length
+          )
+            return (this.rpcCommands = []); // first word is commmand, don't show help
+          this.rpcCommands = h
+            .map(h => h.command.split(" ")[0])
+            .filter(h => ~h.indexOf(v))
+            .sort((a, b) => {
+              const aa = a.indexOf(v);
+              const bb = b.indexOf(v);
+              return aa > bb ? -1 : aa < bb ? 1 : 0;
+            });
+        });
+      }
+    }
+  },
   mixins: [Util],
   data() {
     return {
@@ -142,7 +192,10 @@ export default {
       selectedInvoice: {},
       balance: "",
       onchain: 0,
-      listLoaded: {pays: 0, invoices: 0, peers: 0}
+      listLoaded: { pays: 0, invoices: 0, peers: 0 },
+      selectedCommand: -1,
+      rpcCommands: [], // filtered list for picker
+      rpcHelp: [] // all commands
     };
   },
   mounted() {
@@ -154,7 +207,7 @@ export default {
             this.payments.unshift(data.content.toJSON().result.payments[0]);
           } catch (e) {}
         },
-        err => (console.log(`${err}: ${new Date().toString()}`))
+        err => console.log(`${err}: ${new Date().toString()}`)
       );
     });
     global.eventBus.$on("invoice", label => {
@@ -164,32 +217,58 @@ export default {
             this.invoices.unshift(data.content.toJSON().result.invoices[0]);
           } catch (e) {}
         },
-        err => (console.log(`${err}: ${new Date().toString()}`))
+        err => console.log(`${err}: ${new Date().toString()}`)
       );
     });
-    global.eventBus.$on('delinvoice', label => {
+    global.eventBus.$on("delinvoice", label => {
       const inv = this.invoices.filter(i => i.label == label)[0];
       this.invoices.splice(this.invoices.indexOf(inv), 1);
-    })
-    global.eventBus.$on('channelopen', peerId => {
-      this.callRemote("listpeers", [peerId]).then(
-        data => {
-          const peer = data.content.toJSON().result.peers[0];
-          const channel = peer.channels[peer.channels.length-1]
-          const mine = Math.floor(
-            channel.msatoshi_to_us / 1000
-          );
-          const theirs = Math.floor(
-            channel.msatoshi_total / 1000 - mine
-          );
-          this.peers.unshift(Object.assign({mine: mine, theirs: theirs, channel: channel, original: peer}, peer)) 
-        }, console.log)
-    })
+    });
+    global.eventBus.$on("channelopen", peerId => {
+      this.callRemote("listpeers", [peerId]).then(data => {
+        const peer = data.content.toJSON().result.peers[0];
+        const channel = peer.channels[peer.channels.length - 1];
+        const mine = Math.floor(channel.msatoshi_to_us / 1000);
+        const theirs = Math.floor(channel.msatoshi_total / 1000 - mine);
+        this.peers.unshift(
+          Object.assign(
+            { mine: mine, theirs: theirs, channel: channel, original: peer },
+            peer
+          )
+        );
+      }, console.log);
+    });
   },
   methods: {
+    rpcSelected(item) {
+      console.log('picked', item)
+      this.selectedCommand = item.value
+    },
+    setCommand() {
+      if(~this.selectedCommand) this.rpcCommand = this.rpcCommands[this.selectedCommand];
+    },
+    getHelp() {
+      return new Promise((resolve, reject) => {
+        if (this.rpcHelp.length) {
+          resolve(this.rpcHelp);
+        } else {
+          this.callRemote("help")
+            .then(data => {
+              const result = data.content.toJSON().result;
+              if (result) {
+                this.rpcHelp = result.help;
+                resolve(this.rpcHelp);
+              } else {
+                reject();
+              }
+            })
+            .catch(reject);
+        }
+      });
+    },
     getFunds() {
       this.callRemote("listfunds").then(data => {
-        const result = data.content.toJSON().result
+        const result = data.content.toJSON().result;
         const balance = result.channels.reduce((o, c) => o + c.channel_sat, 0);
         this.balance = `${balance} sats`;
         this.onchain = result.outputs.reduce((o, c) => o + c.value, 0);
@@ -199,7 +278,7 @@ export default {
       this.$navigateTo(Open);
     },
     refresh() {
-      this.indexChange({value: this.selectedIndex});
+      this.indexChange({ value: this.selectedIndex });
     },
     about() {
       this.$navigateTo(About);
@@ -230,55 +309,70 @@ export default {
     },
     indexChange(args) {
       const refresh = this.selectedIndex == args.value;
-      if(refresh || !~this.selectedIndex) this.getFunds()
+      if (refresh || !~this.selectedIndex) this.getFunds();
       this.selectedIndex = args.value;
       switch (this.selectedIndex) {
         case 0:
-          if(!this.listLoaded.pays || refresh)
+          if (!this.listLoaded.pays || refresh)
             this.callRemote("listsendpays").then(
               data => {
                 this.payments = data.content.toJSON().result.payments.reverse();
-                this.listLoaded.pays = 1
+                this.listLoaded.pays = 1;
               },
-              err => (console.log(`${err}: ${new Date().toString()}`))
+              err => console.log(`${err}: ${new Date().toString()}`)
             );
           break;
 
         case 1:
-          if(!this.listLoaded.invoices || refresh)
+          if (!this.listLoaded.invoices || refresh)
             this.callRemote("listinvoices").then(
               data => {
                 this.invoices = data.content.toJSON().result.invoices.reverse();
-                this.listLoaded.invoices = 1
+                this.listLoaded.invoices = 1;
               },
-              err => (console.log(`${err}: ${new Date().toString()}`))
+              err => console.log(`${err}: ${new Date().toString()}`)
             );
 
           break;
 
         case 2:
-          if(!this.listLoaded.peers || refresh)
+          if (!this.listLoaded.peers || refresh)
             this.callRemote("listpeers").then(
               data => {
-                this.peers = data.content.toJSON().result.peers.reduce((o, peer) => {
-                  peer.channels.forEach(channel => {
-                    const mine = Math.floor(
-                      channel.msatoshi_to_us / 1000
-                    );
-                    const theirs = Math.floor(
-                      channel.msatoshi_total / 1000 - mine
-                    );
-                    o.push(Object.assign({mine: mine, theirs: theirs, channel: channel, original: peer}, peer)) 
-                    // TODO: too tightly coupled, clean up peer/channel relation for here and detail
-                  }) 
-                  return o;
-                }, []);
+                this.peers = data.content
+                  .toJSON()
+                  .result.peers.reduce((o, peer) => {
+                    peer.channels.forEach(channel => {
+                      const mine = Math.floor(channel.msatoshi_to_us / 1000);
+                      const theirs = Math.floor(
+                        channel.msatoshi_total / 1000 - mine
+                      );
+                      o.push(
+                        Object.assign(
+                          {
+                            mine: mine,
+                            theirs: theirs,
+                            channel: channel,
+                            original: peer
+                          },
+                          peer
+                        )
+                      );
+                      // TODO: too tightly coupled, clean up peer/channel relation for here and detail
+                    });
+                    return o;
+                  }, []);
                 this.peers.sort((a, b) => {
-                  if(''+a.channel.state == ''+b.channel.state) return 0
-                  else return a.channel.state == 'CHANNELD_NORMAL' ? -1 : b.channel.state == 'CHANNELD_NORMAL' ? 1 : 0
-                })
+                  if ("" + a.channel.state == "" + b.channel.state) return 0;
+                  else
+                    return a.channel.state == "CHANNELD_NORMAL"
+                      ? -1
+                      : b.channel.state == "CHANNELD_NORMAL"
+                      ? 1
+                      : 0;
+                });
               },
-              err => (console.log(`${err}: ${new Date().toString()}`))
+              err => console.log(`${err}: ${new Date().toString()}`)
             );
 
           break;
@@ -296,6 +390,7 @@ export default {
           2
         );
         this.rpcCommand = "";
+        this.rpcCommands = [];
       });
     },
     scanQrCode() {
@@ -390,7 +485,7 @@ ActionBar label {
   font-size: 14;
   font-style: italic;
   padding: 0 8 8 8;
-  height: 24
+  height: 24;
 }
 
 TextView {
@@ -402,12 +497,11 @@ TextView {
 }
 
 .desc {
-  color: #444
+  color: #444;
 }
 
 .action {
   font-size: 32;
   padding-bottom: 10;
 }
-
 </style>
