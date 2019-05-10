@@ -37,9 +37,10 @@ The `appPassword` is the local password to unlock the app.
 Currently there is some basic payment, connection and invoice information.  Any connections must already be set from your node or from the app using the DEBUG tab which gives you full RPC access.
 
 ## To be implemented
-* Chain funds (withdraw, newaddress)
-* Debug helpers
+* Chain funds? (withdraw, newaddress)
 * Custom screens
+  * ex. a routing node user can run a routing specific plugin
+  * custom screen can be configured to point to plugin's RPC calls
 
 ## Other options
 
