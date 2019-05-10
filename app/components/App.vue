@@ -126,7 +126,13 @@
             />
             <Button dock="top" text="Execute" @tap="execRPC"/>
             <Button v-show="rpcCommands.length" dock="top" text="Choose Command" @tap="setCommand"/>
-            <ListPicker v-show="rpcCommands.length" dock="top" :items="rpcCommands" selectedIndex="-1" @selectedIndexChange="rpcSelected"/>
+            <ListPicker
+              v-show="rpcCommands.length"
+              dock="top"
+              :items="rpcCommands"
+              selectedIndex="-1"
+              @selectedIndexChange="rpcSelected"
+            />
             <ScrollView>
               <ScrollView orientation="horizontal">
                 <TextView dock="top" :text="rpcResponse"/>
@@ -157,15 +163,15 @@ global.VERSION = "0.0.4-WIP";
 export default {
   watch: {
     rpcCommand(v) {
-      if(typeof v == 'undefined') return;
-      console.log('watching rpcCommand', v)
+      if (typeof v == "undefined") return;
+      console.log("watching rpcCommand", v);
       if (this.rpcCommand.length > 1) {
         this.getHelp().then(h => {
-          console.log('got help', h)
+          console.log("got help", h);
           const cmd = v.split(" ")[0];
           if (
-            h.map(h => h.command.split(" ")[0])
-              .filter(c => "" + c == "" + cmd).length
+            h.map(h => h.command.split(" ")[0]).filter(c => "" + c == "" + cmd)
+              .length
           )
             return (this.rpcCommands = []); // first word is commmand, don't show help
           this.rpcCommands = h
@@ -241,11 +247,11 @@ export default {
   },
   methods: {
     rpcSelected(item) {
-      console.log('picked', item)
-      this.selectedCommand = item.value
+      this.selectedCommand = item.value;
     },
     setCommand() {
-      if(~this.selectedCommand) this.rpcCommand = this.rpcCommands[this.selectedCommand];
+      if (~this.selectedCommand)
+        this.rpcCommand = this.rpcCommands[this.selectedCommand];
     },
     getHelp() {
       return new Promise((resolve, reject) => {
