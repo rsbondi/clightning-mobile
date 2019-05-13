@@ -180,7 +180,7 @@ export default {
             .sort((a, b) => {
               const aa = a.indexOf(v);
               const bb = b.indexOf(v);
-              return aa > bb ? -1 : aa < bb ? 1 : 0;
+              return aa > bb ? 1 : aa < bb ? -1 : a > b ? 1 : a < b ? -1 : 0;
             });
         });
       }
