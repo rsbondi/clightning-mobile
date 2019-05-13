@@ -158,7 +158,7 @@ import PeerDetail from "./PeerDetail";
 import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 
-global.VERSION = "0.0.4-WIP";
+global.VERSION = "0.0.4";
 
 export default {
   watch: {
