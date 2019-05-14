@@ -106,7 +106,12 @@
           </DockLayout>
         </TabViewItem>
         <TabViewItem v-if="showCustom" title="Custom">
-          <WebView :src="customHtml" />
+          <StackLayout>
+            <TextField v-model="customCommand" hint="enter command" autocapitalizationType="none"/>
+            <Button text="Update" @tap="execCustom"/>
+            <WebView :src="customHtml" />
+          </StackLayout>
+
         </TabViewItem>
       </TabView>
     </GridLayout>
@@ -142,10 +147,8 @@ export default {
       onchain: 0,
       listLoaded: {pays: 0, invoices: 0, peers: 0},
       showCustom: global.showCustom,
-      customHtml: `<h1>Custom content from plugin</h1>
-<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="50" cy="50" r="50"/>
-</svg>`
+      customHtml: `<h1>Custom content from plugin</h1>`,
+      customCommand: 'forwardview'
     };
   },
   mounted() {
@@ -267,6 +270,11 @@ export default {
 
           break;
       }
+    },
+    execCustom() {
+      this.callRemote(this.customCommand).then(data => {
+        this.customHtml = data.content.toJSON().result
+      });
     },
     execRPC() {
       if (!this.rpcCommand) return;
