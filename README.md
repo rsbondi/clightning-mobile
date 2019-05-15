@@ -3,8 +3,12 @@
 A mobile android<span id="a1">[[1]](#f1)</span> app to control your c-lightning node.  This is not a mobile wallet, it is a remote client that abstracts features such as creating invoices, sending payments etc., 
 all wallet functionality is in your node. This app also provides full RPC access for power users.
 
-There were several motivations for creating this.  I wanted more of a power user app for my own purpose.  I also wanted a proof of concept fot the [remoteRPC](https://github.com/rsbondi/clightning-go-plugin/tree/master/remoteRPC)
+There were several motivations for creating this.  I wanted more of a power user app for my own purpose.  
+
+I also wanted a proof of concept fot the [remoteRPC](https://github.com/rsbondi/clightning-go-plugin/tree/master/remoteRPC)
 plugin as it just feels more integrated than having a seperate server to set up, install and launch, running its own protocol, where the plugin uses existing c-lightning JSON-RPC protocol and you just configure additional parameters for your existing c-lightning and let it automatically launch.  I feel the plugin could open new doors for other developers as well.
+
+Finally, I wanted to showcase how awsome the c-lightning plugin architecture is and create an example app that would take advantage of this as shown in the `Cusom screens` section below.
 
 ## Warning: #reckless
 
@@ -36,9 +40,25 @@ The `appPassword` is the local password to unlock the app.
 
 Currently there is some basic payment, connection and invoice information.  Any connections must already be set from your node or from the app using the DEBUG tab which gives you full RPC access.
 
+## RPC access
+
+This client gives you full access to all the RPC calls from the `Debug` tab.  The plugin architecture of c-lightning allows for RPC passthrough, so in other words a plugin can add additional RPC commands.  Since communication is through the `remoteRPC` plugin, which is just a proxy to the unix socket connection to c-lightning, any RPC command added via a plugin would also be available.
+
+The RPC screen internally calls the `help` RPC command to build a list of available commands which can be selected from a list making it a bit easier to use.
+
+## Custom screens - WIP
+
+![alt text](screenshots/customflow.png)
+
+Custom screens can be displayed by enabling the `Show Custom Tab` option in the setting screen
+
+The above diagram shows the basic layout of the mobile client data flow.  All calls go through the `remoteRPC` plugin.  The plugin is the basic communication between the client and your node, normally using JSON RPC internally to provide data for all screens.  With the custom setup, the JSON RPC `result` field contains the HTML of the data to be displayed.  This gives you flexibility of being able to display info about your node in a way that best suits your needs.  You just need a plugin that creates an HTML result.  See the [example](https://github.com/rsbondi/clightning-go-plugin/tree/master/stats) that I created, it is in go, but plugins can be any language, python has wide support.  See [go](https://github.com/niftynei/glightning) and [python](https://github.com/ElementsProject/lightning/tree/master/contrib/pylightning#writing-a-plugin) libraries for ease of plugin development.
+
+Currently you enter the RPC command in the text field to execute, in the near future, this will be configurable to allow you to save several custom screens and choose from a list, implementation details TBD.
+
 ## To be implemented
 * Chain funds? (withdraw, newaddress)
-* Custom screens
+* Custom screens WIP
   * ex. a routing node user can run a routing specific plugin
   * custom screen can be configured to point to plugin's RPC calls
 
