@@ -1,5 +1,5 @@
 <template>
-  <Page>
+  <Page @navigatedTo="getSettings">
     <ActionBar flat="true">
       <StackLayout>
         <Label :text="balance" class="balance"/>
@@ -140,6 +140,13 @@
             </ScrollView>
           </DockLayout>
         </TabViewItem>
+        <TabViewItem v-if="showCustom" title="Custom">
+          <StackLayout>
+            <TextField v-model="customCommand" hint="enter command" autocapitalizationType="none"/>
+            <Button text="Update" @tap="execCustom"/>
+            <WebView :src="customHtml" />
+          </StackLayout>
+        </TabViewItem>
       </TabView>
     </GridLayout>
   </Page>
@@ -158,7 +165,7 @@ import PeerDetail from "./PeerDetail";
 import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 
-global.VERSION = "0.0.4";
+global.VERSION = "0.0.5-WIP";
 
 export default {
   watch: {
@@ -201,7 +208,10 @@ export default {
       listLoaded: { pays: 0, invoices: 0, peers: 0 },
       selectedCommand: -1,
       rpcCommands: [], // filtered list for picker
-      rpcHelp: [] // all commands
+      rpcHelp: [], // all commands
+      showCustom: global.showCustom,
+      customHtml: `<h1>Custom</h1>`,
+      customCommand: 'forwardview'
     };
   },
   mounted() {
@@ -383,6 +393,14 @@ export default {
 
           break;
       }
+    },
+    execCustom() {
+      this.callRemote(this.customCommand).then(data => {
+        this.customHtml = data.content.toJSON().result
+      });
+    },
+    getSettings() {
+      this.showCustom = global.showCustom 
     },
     execRPC() {
       if (!this.rpcCommand) return;
