@@ -9,6 +9,8 @@
       <TextField v-model="remotePassword" secure="true" hint="Remote Password"/>
       <TextField v-model="appPassword" secure="true" hint="app Password"/>
       <WrapLayout>
+        <Label text="Show RPC Tab" width="50%"/>
+        <Switch v-model="showRPC" width="50%"/>
         <Label text="Show Custom Tab" width="50%"/>
         <Switch v-model="showCustom" width="50%"/>
       </WrapLayout>
@@ -31,7 +33,8 @@ export default {
       remoteUser: "",
       remotePassword: "",
       appPassword: "",
-      showCustom: false
+      showCustom: false,
+      showRPC: true
     };
   },
   methods: {
@@ -56,6 +59,8 @@ export default {
       global.remoteUser = this.remoteUser;
       global.showCustom = this.showCustom;
       appSettings.setBoolean("showCustom", this.showCustom);
+      global.showRPC = this.showRPC;
+      appSettings.setBoolean("showRPC", this.showRPC);
 
       this.$navigateTo(App);
     }
@@ -71,6 +76,9 @@ export default {
 
       global.showCustom = appSettings.getBoolean("showCustom", false);
       this.showCustom = global.showCustom;
+
+      global.showRPC = appSettings.getBoolean("showRPC", true);
+      this.showRPC = global.showRPC;
     }, 0);
   }
 };

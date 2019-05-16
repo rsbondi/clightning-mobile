@@ -47,6 +47,7 @@ export default {
           }
         })
         global.showCustom = appSettings.getBoolean("showCustom", false);
+        global.showRPC = appSettings.getBoolean("showRPC", true);
       } catch (e) {
         console.log(e);
       }

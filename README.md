@@ -42,7 +42,7 @@ Currently there is some basic payment, connection and invoice information.  Any 
 
 ## RPC access
 
-This client gives you full access to all the RPC calls from the `Debug` tab.  The plugin architecture of c-lightning allows for RPC passthrough, so in other words a plugin can add additional RPC commands.  Since communication is through the `remoteRPC` plugin, which is just a proxy to the unix socket connection to c-lightning, any RPC command added via a plugin would also be available.
+This client gives you full access to all the RPC calls from the `RPC` tab.  The plugin architecture of c-lightning allows for RPC passthrough, so in other words a plugin can add additional RPC commands.  Since communication is through the `remoteRPC` plugin, which is just a proxy to the unix socket connection to c-lightning, any RPC command added via a plugin would also be available.
 
 The RPC screen internally calls the `help` RPC command to build a list of available commands which can be selected from a list making it a bit easier to use.
 

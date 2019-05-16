@@ -116,7 +116,7 @@
             </v-template>
           </ListView>
         </TabViewItem>
-        <TabViewItem title="Debug">
+        <TabViewItem v-if="showRPC" title="RPC">
           <DockLayout stretchLastChild="true">
             <TextField
               dock="top"
@@ -211,7 +211,8 @@ export default {
       rpcHelp: [], // all commands
       showCustom: global.showCustom,
       customHtml: `<h1>Custom</h1>`,
-      customCommand: 'forwardview'
+      customCommand: 'forwardview',
+      showRPC: global.showRPC,
     };
   },
   mounted() {
@@ -401,6 +402,7 @@ export default {
     },
     getSettings() {
       this.showCustom = global.showCustom 
+      this.showRPC = global.showRPC
     },
     execRPC() {
       if (!this.rpcCommand) return;
