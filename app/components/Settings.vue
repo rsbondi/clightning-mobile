@@ -7,7 +7,7 @@
       <TextField v-model="remoteUrl" hint="Remote Url" autocapitalizationType="none"/>
       <TextField v-model="remoteUser" hint="Remote User" autocapitalizationType="none"/>
       <TextField v-model="remotePassword" secure="true" hint="Remote Password"/>
-      <TextField v-model="appPassword" secure="true" hint="app Password"/>
+      <TextField v-model="appPassword" secure="true" hint="App Password"/>
       <WrapLayout>
         <Label text="Show RPC Tab" width="50%"/>
         <Switch v-model="showRPC" width="50%"/>

@@ -20,6 +20,12 @@
       <ActionItem @tap="onTapSettings" text="Settings" android.position="popup"/>
       <ActionItem @tap="onNode" text="Node" android.position="popup"/>
       <ActionItem @tap="about" text="About" android.position="popup"/>
+      <ActionItem
+        v-show="selectedIndex == customIndex"
+        @tap="editCustom"
+        text="Toggle Custom Edit"
+        android.position="popup"
+      />
     </ActionBar>
     <GridLayout columns="*" rows="1*">
       <TabView col="0" row="0" :selectedIndex="selectedIndex" @selectedIndexChange="indexChange">
@@ -142,9 +148,15 @@
         </TabViewItem>
         <TabViewItem v-if="showCustom" title="Custom">
           <StackLayout>
-            <TextField v-model="customCommand" hint="enter command" autocapitalizationType="none"/>
-            <Button text="Update" @tap="execCustom"/>
-            <WebView :src="customHtml" />
+            <TextField
+              v-show="customEditMode"
+              v-model="customCommand"
+              hint="enter command"
+              autocapitalizationType="none"
+            />
+            <Button v-show="customEditMode" text="Update" @tap="execCustom"/>
+            <Button v-show="customEditMode" text="Save Command" @tap="saveCustom"/>
+            <WebView :src="customHtml"/>
           </StackLayout>
         </TabViewItem>
       </TabView>
@@ -164,6 +176,7 @@ import PaymentDetail from "./PaymentDetail";
 import PeerDetail from "./PeerDetail";
 import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
+const appSettings = require("application-settings");
 
 global.VERSION = "0.0.5-WIP";
 
@@ -171,10 +184,8 @@ export default {
   watch: {
     rpcCommand(v) {
       if (typeof v == "undefined") return;
-      console.log("watching rpcCommand", v);
       if (this.rpcCommand.length > 1) {
         this.getHelp().then(h => {
-          console.log("got help", h);
           const cmd = v.split(" ")[0];
           if (
             h.map(h => h.command.split(" ")[0]).filter(c => "" + c == "" + cmd)
@@ -211,8 +222,10 @@ export default {
       rpcHelp: [], // all commands
       showCustom: global.showCustom,
       customHtml: `<h1>Custom</h1>`,
-      customCommand: 'forwardview',
-      showRPC: global.showRPC,
+      customCommand: "",
+      customCommands: [],
+      customEditMode: false,
+      showRPC: global.showRPC
     };
   },
   mounted() {
@@ -397,12 +410,30 @@ export default {
     },
     execCustom() {
       this.callRemote(this.customCommand).then(data => {
-        this.customHtml = data.content.toJSON().result
+        this.customHtml = data.content.toJSON().result;
       });
     },
+    editCustom() {
+      this.customEditMode = !this.customEditMode;
+      if (!this.customEditMode && this.customCommand) this.execCustom();
+    },
     getSettings() {
-      this.showCustom = global.showCustom 
-      this.showRPC = global.showRPC
+      this.showCustom = global.showCustom;
+      this.showRPC = global.showRPC;
+      this.customCommands = global.customCommands;
+      if (this.customCommands.length)
+        this.customCommand = this.customCommands[0];
+        this.execCustom();
+    },
+    saveCustom() {
+      if (!~this.customCommands.indexOf(this.customCommand)) {
+        this.customCommands.push(this.customCommand);
+        global.customCommands = this.customCommands;
+        appSettings.setString(
+          "customCommands",
+          JSON.stringify(global.customCommands)
+        );
+      }
     },
     execRPC() {
       if (!this.rpcCommand) return;
@@ -450,6 +481,11 @@ export default {
             console.log("No scan. " + errorMessage);
           }
         );
+    }
+  },
+  computed: {
+    customIndex() {
+      return global.showRPC ? 4 : 3;
     }
   }
 };

@@ -48,6 +48,8 @@ export default {
         })
         global.showCustom = appSettings.getBoolean("showCustom", false);
         global.showRPC = appSettings.getBoolean("showRPC", true);
+        const customCommands =  appSettings.getString("customCommands");
+        global.customCommands = customCommands ? JSON.parse(customCommands) : []
       } catch (e) {
         console.log(e);
       }
