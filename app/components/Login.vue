@@ -34,22 +34,32 @@ export default {
   mounted() {
     setTimeout(() => {
       try {
-        secureStorage.get({
-          key: "remoteUrl"
-        }).then(async url => {
-          if (!url) {
-            this.$navigateTo(Settings);
-          } else {
-            global.appPassword = await secureStorage.get({key: "appPassword"})
-            global.remoteUser = await secureStorage.get({key: "remoteUser"})
-            global.remotePassword = await secureStorage.get({key: "remotePassword"})
-            global.remoteUrl = url
-          }
-        })
+        secureStorage
+          .get({
+            key: "remoteUrl"
+          })
+          .then(async url => {
+            if (!url) {
+              this.$navigateTo(Settings);
+            } else {
+              global.appPassword = await secureStorage.get({
+                key: "appPassword"
+              });
+              global.remoteUser = await secureStorage.get({
+                key: "remoteUser"
+              });
+              global.remotePassword = await secureStorage.get({
+                key: "remotePassword"
+              });
+              global.remoteUrl = url;
+            }
+          });
         global.showCustom = appSettings.getBoolean("showCustom", false);
         global.showRPC = appSettings.getBoolean("showRPC", true);
-        const customCommands =  appSettings.getString("customCommands");
-        global.customCommands = customCommands ? JSON.parse(customCommands) : []
+        const customCommands = appSettings.getString("customCommands");
+        global.customCommands = customCommands
+          ? JSON.parse(customCommands)
+          : [];
       } catch (e) {
         console.log(e);
       }
