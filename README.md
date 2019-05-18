@@ -54,13 +54,10 @@ Custom screens can be displayed by enabling the `Show Custom Tab` option in the 
 
 The above diagram shows the basic layout of the mobile client data flow.  All calls go through the `remoteRPC` plugin.  The plugin is the basic communication between the client and your node, normally using JSON RPC internally to provide data for all screens.  With the custom setup, the JSON RPC `result` field contains the HTML of the data to be displayed.  This gives you flexibility of being able to display info about your node in a way that best suits your needs.  You just need a plugin that creates an HTML result.  See the [example](https://github.com/rsbondi/clightning-go-plugin/tree/master/stats) that I created, it is in go, but plugins can be any language, python has wide support.  See [go](https://github.com/niftynei/glightning) and [python](https://github.com/ElementsProject/lightning/tree/master/contrib/pylightning#writing-a-plugin) libraries for ease of plugin development.
 
-Currently you enter the RPC command in the text field to execute, in the near future, this will be configurable to allow you to save several custom screens and choose from a list, implementation details TBD.
+To use custom screens, when on the custom tab you will get a new menu command `Toggle Custom Edit`.  This will show a text field to enter custom command.  Enter the command and press `Update` button.  If all looks well, press the `Save` button.  When the tab launches, the first saved command will execute.  If there are more than one saved, you will get an additional menu commmand, `Select Custom Command`.  This will allow you to choose a different display for this tab.
 
 ## To be implemented
 * Chain funds? (withdraw, newaddress)
-* Custom screens WIP
-  * ex. a routing node user can run a routing specific plugin
-  * custom screen can be configured to point to plugin's RPC calls
 
 ## Other options
 

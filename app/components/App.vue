@@ -26,6 +26,12 @@
         text="Toggle Custom Edit"
         android.position="popup"
       />
+      <ActionItem
+        v-show="selectedIndex == customIndex && customCommands.length > 1"
+        @tap="showCustomSelect"
+        text="Select Custom Command"
+        android.position="popup"
+      />
     </ActionBar>
     <GridLayout columns="*" rows="1*">
       <TabView col="0" row="0" :selectedIndex="selectedIndex" @selectedIndexChange="indexChange">
@@ -148,15 +154,26 @@
         </TabViewItem>
         <TabViewItem v-if="showCustom" title="Custom">
           <StackLayout>
-            <TextField
-              v-show="customEditMode"
-              v-model="customCommand"
-              hint="enter command"
-              autocapitalizationType="none"
-            />
-            <Button v-show="customEditMode" text="Update" @tap="execCustom"/>
-            <Button v-show="customEditMode" text="Save Command" @tap="saveCustom"/>
-            <WebView :src="customHtml"/>
+            <StackLayout v-show="!customSelectMode">
+              <TextField
+                v-show="customEditMode"
+                v-model="customCommand"
+                hint="enter command"
+                autocapitalizationType="none"
+              />
+              <Button v-show="customEditMode" text="Update" @tap="execCustom"/>
+              <Button v-show="customEditMode" text="Save Command" @tap="saveCustom"/>
+              <WebView :src="customHtml"/>
+            </StackLayout>
+            <StackLayout v-show="customSelectMode">
+              <Button text="Select" @tap="selectCustom"/>
+              <ListPicker
+                dock="top"
+                :items="customCommands"
+                selectedIndex="-1"
+                @selectedIndexChange="customSelected"
+              />
+            </StackLayout>
           </StackLayout>
         </TabViewItem>
       </TabView>
@@ -225,6 +242,8 @@ export default {
       customCommand: "",
       customCommands: [],
       customEditMode: false,
+      customSelectMode: false,
+      selectedCustom: -1,
       showRPC: global.showRPC
     };
   },
@@ -276,6 +295,15 @@ export default {
     setCommand() {
       if (~this.selectedCommand)
         this.rpcCommand = this.rpcCommands[this.selectedCommand];
+    },
+    customSelected(item) {
+      this.selectedCustom = item.value;
+    },
+    selectCustom() {
+      if (~this.selectedCustom) {
+        this.customCommand = this.customCommands[this.selectedCustom];
+        this.customSelectMode = false
+      }
     },
     getHelp() {
       return new Promise((resolve, reject) => {
@@ -417,13 +445,17 @@ export default {
       this.customEditMode = !this.customEditMode;
       if (!this.customEditMode && this.customCommand) this.execCustom();
     },
+    showCustomSelect() {
+      this.customSelectMode = true;
+    },
     getSettings() {
       this.showCustom = global.showCustom;
       this.showRPC = global.showRPC;
       this.customCommands = global.customCommands;
-      if (this.customCommands.length)
+      if (this.customCommands.length) {
         this.customCommand = this.customCommands[0];
         this.execCustom();
+      }
     },
     saveCustom() {
       if (!~this.customCommands.indexOf(this.customCommand)) {
