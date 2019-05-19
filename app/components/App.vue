@@ -195,7 +195,7 @@ import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 const appSettings = require("application-settings");
 
-global.VERSION = "0.0.5-WIP";
+global.VERSION = "0.0.5";
 
 export default {
   watch: {
@@ -238,7 +238,7 @@ export default {
       rpcCommands: [], // filtered list for picker
       rpcHelp: [], // all commands
       showCustom: global.showCustom,
-      customHtml: `<h1>Custom</h1>`,
+      customHtml: `<p>Enter RPC command, update, save when proper result displays</p>`,
       customCommand: "",
       customCommands: [],
       customEditMode: false,
@@ -432,8 +432,15 @@ export default {
               },
               err => console.log(`${err}: ${new Date().toString()}`)
             );
+            break;
 
-          break;
+          case this.customIndex:
+            if (this.customCommand) {
+              this.execCustom();
+            } else {
+              this.customEditMode = true
+            }
+            break;
       }
     },
     execCustom() {
@@ -454,7 +461,6 @@ export default {
       this.customCommands = global.customCommands;
       if (this.customCommands.length) {
         this.customCommand = this.customCommands[0];
-        this.execCustom();
       }
     },
     saveCustom() {
@@ -466,6 +472,7 @@ export default {
           JSON.stringify(global.customCommands)
         );
       }
+      this.customEditMode = false;
     },
     execRPC() {
       if (!this.rpcCommand) return;
