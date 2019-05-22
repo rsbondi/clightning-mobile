@@ -195,7 +195,7 @@ import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 const appSettings = require("application-settings");
 
-global.VERSION = "0.0.5";
+global.VERSION = "0.0.6-WIP";
 
 export default {
   watch: {
