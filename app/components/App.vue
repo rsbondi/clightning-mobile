@@ -303,6 +303,7 @@ export default {
       if (~this.selectedCustom) {
         this.customCommand = this.customCommands[this.selectedCustom];
         this.customSelectMode = false
+        setTimeout(() => this.execCustom(), 0)
       }
     },
     getHelp() {
