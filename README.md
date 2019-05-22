@@ -56,6 +56,8 @@ The above diagram shows the basic layout of the mobile client data flow.  All ca
 
 To use custom screens, when on the custom tab you will get a new menu command `Toggle Custom Edit`.  This will show a text field to enter custom command.  Enter the command and press `Update` button.  If all looks well, press the `Save` button.  When the tab launches, the first saved command will execute.  If there are more than one saved, you will get an additional menu commmand, `Select Custom Command`.  This will allow you to choose a different display for this tab.
 
+See [video](https://www.youtube.com/watch?v=KF3fvi0j8b8)
+
 ## To be implemented
 * Chain funds? (withdraw, newaddress)
 
