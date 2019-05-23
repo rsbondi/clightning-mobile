@@ -3,6 +3,8 @@
 A mobile android<span id="a1">[[1]](#f1)</span> app to control your c-lightning node.  This is not a mobile wallet, it is a remote client that abstracts features such as creating invoices, sending payments etc., 
 all wallet functionality is in your node. This app also provides full RPC access for power users.
 
+In [Taxonomy of LN nodes](https://youtu.be/CyieujRFk3g?t=3775), Lisa Neigut defines the 3 types of lightning nodes, consumer, vendor and liquidity provider.  There are many options for consumers, this project does not aim to be a consumer product but to provide an alternative for vendors and liquidity providers
+
 There were several motivations for creating this.  I wanted more of a power user app for my own purpose.  
 
 I also wanted a proof of concept fot the [remoteRPC](https://github.com/rsbondi/clightning-go-plugin/tree/master/remoteRPC)
