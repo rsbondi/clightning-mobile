@@ -3,7 +3,7 @@
     <ActionBar title="Channel Detail">
       <NavigationButton text="Go back" android.systemIcon="ic_menu_back" @tap="$navigateBack"/>
       <ActionItem class="action" @tap="confirmClose" android.position="actionBar">
-        <Label text="✖"/>
+        <Label class="close" text="✖"/>
       </ActionItem>
     </ActionBar>
     <ScrollView>
@@ -80,3 +80,10 @@ export default {
   }
 };
 </script>
+
+
+<style scoped>
+  .close {
+    padding-right: 10;
+  }
+</style>

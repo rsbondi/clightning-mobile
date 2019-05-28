@@ -2,7 +2,7 @@
   <Page>
     <ActionBar title="Login"/>
     <StackLayout>
-      <TextField v-model="password" secure="true" hint="Enter Password"/>
+      <TextField ref="pass" v-model="password" secure="true" hint="Enter Password"/>
       <Button text="Login" @tap="validate"/>
     </StackLayout>
   </Page>
@@ -63,6 +63,7 @@ export default {
       } catch (e) {
         console.log(e);
       }
+      setTimeout(() => { this.$refs.pass.nativeView.focus() }, 100)
     }, 0);
   }
 };
