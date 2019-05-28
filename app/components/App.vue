@@ -165,12 +165,13 @@
               <Button v-show="customEditMode" text="Save Command" @tap="saveCustom"/>
               <WebView :src="customHtml"/>
             </StackLayout>
-            <StackLayout v-show="customSelectMode">
+            <StackLayout v-if="customSelectMode">
               <Button text="Select" @tap="selectCustom"/>
+              <Button text="Remove" @tap="removeCustom"/>
               <ListPicker
                 dock="top"
                 :items="customCommands"
-                selectedIndex="-1"
+                :selectedIndex="selectedCustom"
                 @selectedIndexChange="customSelected"
               />
             </StackLayout>
@@ -304,6 +305,22 @@ export default {
         this.customCommand = this.customCommands[this.selectedCustom];
         this.customSelectMode = false
         setTimeout(() => this.execCustom(), 0)
+      }
+    },
+    removeCustom() {
+      if (~this.selectedCustom) {
+        confirm("Are you sure you want to remove custom command?").then(ok => {
+          if (ok) {
+            this.customCommands.splice(this.selectedCustom, 1)
+            this.selectedCustom = 0
+            global.customCommands = this.customCommands;
+            appSettings.setString(
+              "customCommands",
+              JSON.stringify(global.customCommands)
+            );
+            if (global.customCommands.length == 1) this.selectCustom()
+          }
+        });
       }
     },
     getHelp() {
