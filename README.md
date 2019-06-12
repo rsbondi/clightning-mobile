@@ -40,7 +40,7 @@ When app is launched for the first time, you will taken to the settings screen.
 Enter the requested informaition, `remoteUrl` to match your secured domain, including port, `remoteUser` and `remotePassword` to match those used for the `remoteRPC` plugin.
 The `appPassword` is the local password to unlock the app.
 
-Currently there is some basic payment, connection and invoice information.  Any connections must already be set from your node or from the app using the DEBUG tab which gives you full RPC access.
+Currently there is some basic payment, connection and invoice information.
 
 ## RPC access
 
