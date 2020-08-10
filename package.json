@@ -1,6 +1,6 @@
 {
   "name": "clightning-mobile",
-  "version": "0.0.6-WIP",
+  "version": "0.0.6",
   "description": "A native mobile application for remote access to a clightning node",
   "author": "Richard Bondi",
   "license": "MIT",
@@ -14,40 +14,40 @@
   "nativescript": {
     "id": "net.richardbondi.clightningclient",
     "tns-ios": {
-      "version": "5.0.0"
+      "version": "6.0.1"
     },
     "tns-android": {
-      "version": "5.0.0"
+      "version": "6.0.0"
     }
   },
   "dependencies": {
-    "nativescript-barcodescanner": "^3.1.3",
+    "nativescript-barcodescanner": "^3.3.2",
     "nativescript-clipboard": "^1.1.7",
     "nativescript-secure-storage": "^2.4.0",
     "nativescript-socketio": "^3.2.1",
     "nativescript-toasty": "^1.3.0",
     "nativescript-vue": "^2.0.0",
     "qrcode": "^1.3.3",
-    "tns-core-modules": "^5.0.2"
+    "tns-core-modules": "6.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
     "babel-loader": "^8.0.2",
     "babel-traverse": "6.26.0",
     "babel-types": "6.26.0",
     "babylon": "6.18.0",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
-    "css-loader": "^1.0.0",
+    "css-loader": "^3.2.0",
     "lazy": "1.0.11",
-    "nativescript-dev-webpack": "^0.24.1",
+    "nativescript-dev-webpack": "^1.2.0",
     "nativescript-vue-template-compiler": "^2.0.0",
     "nativescript-worker-loader": "~0.9.0",
     "terser-webpack-plugin": "^1.1.0",
     "vue-loader": "^15.2.6",
     "webpack": "^4.16.4",
-    "webpack-bundle-analyzer": ">=3.3.2",
+    "webpack-bundle-analyzer": ">=3.5.0",
     "webpack-cli": "^3.1.0"
   }
 }

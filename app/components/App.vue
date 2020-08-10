@@ -54,7 +54,7 @@
                   row="0"
                 />
                 <Label
-                  :text="pay.label || pay.destination"
+                  :text="pay.label"
                   height="30"
                   col="0"
                   row="1"
@@ -254,7 +254,7 @@ export default {
       this.callRemote("listsendpays", [bolt11]).then(
         data => {
           try {
-            this.payments.unshift(data.content.toJSON().result.payments[0]);
+            this.payments.unshift(this._groupPayments(data.content.toJSON().result.payments)[0]);
           } catch (e) {}
         },
         err => console.log(`${err}: ${new Date().toString()}`)
@@ -383,6 +383,30 @@ export default {
     onTapPeerList(event) {
       this.$navigateTo(PeerDetail, { props: { peer: event.item } });
     },
+    _groupPayments(pays) {
+      return Object.values(pays.reduce((o, c) => {
+        const multi = !!c.partid
+
+        o[c.payment_hash] = o[c.payment_hash] || {label: ''}
+        const p = o[c.payment_hash]
+        if (!multi) p.id = c.id
+        p.payment_hash = c.payment_hash
+
+        if (c.payment_preimage) p.payment_preimage = c.payment_preimage
+        if (c.bolt11) p.bolt11 = c.bolt11
+        if (c.label) p.label = c.label
+        if (c.destination) p.destination = c.destination
+        const sent = c.status === 'complete' ? c.msatoshi_sent : 0
+        p.msatoshi_sent = (p.msatoshi_sent || 0) + sent
+        p.msatoshi = (p.msatoshi || 0) + (c.status === 'complete' ? c.msatoshi : 0)
+        if (!multi && c.status === 'complete') p.msatoshi_sent = c.msatoshi_sent
+        p.created_at = c.created_at
+        p.status = p.status === 'complete' ? p.status : c.status
+        if (multi && c.status === 'complete') p.parts = (p.parts || 0) + 1
+        
+        return o
+      }, {}))
+    },
     indexChange(args) {
       const refresh = this.selectedIndex == args.value;
       if (refresh || !~this.selectedIndex) this.getFunds();
@@ -392,7 +416,7 @@ export default {
           if (!this.listLoaded.pays || refresh)
             this.callRemote("listsendpays").then(
               data => {
-                this.payments = data.content.toJSON().result.payments.reverse();
+                this.payments = this._groupPayments(data.content.toJSON().result.payments.reverse());
                 this.listLoaded.pays = 1;
               },
               err => console.log(`${err}: ${new Date().toString()}`)
