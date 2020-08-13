@@ -1,8 +1,9 @@
 {
   "android": {
-    "v8Flags": "--expose_gc"
+    "v8Flags": "--expose_gc",
+    "markingMode": "none"
   },
   "main": "main",
   "name": "clightning-client",
-  "version": "0.0.6-WIP"
+  "version": "0.0.7"
 }
