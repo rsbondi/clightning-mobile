@@ -26,7 +26,7 @@
 <script>
 import Util from "./util";
 const clipboard = require("nativescript-clipboard");
-const QRCode = require("qrcode");
+const qrcode = require('qrcode-generator')
 
 export default {
   mixins: [Util],
@@ -48,14 +48,16 @@ export default {
       ]).then(data => {
         const result = data.content.toJSON().result;
         this.bolt11 = result.bolt11;
-        QRCode.toDataURL(this.bolt11)
-          .then(url => {
-            this.qrcode = url;
-          })
-          .catch(err => {
-            console.error(err);
-          });
-          global.eventBus.$emit("invoice", label);
+
+        const typeNumber = 0;
+        const errorCorrectionLevel = 'Q';
+        const qr = qrcode(typeNumber, errorCorrectionLevel);
+        qr.addData(this.bolt11);
+        qr.make();
+
+        this.qrcode = qr.createDataURL()
+
+        global.eventBus.$emit("invoice", label);
       });
     },
     clip() {

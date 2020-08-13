@@ -44,7 +44,8 @@
 
 <script>
 import Util from "./util";
-const QRCode = require("qrcode");
+const qrcode = require('qrcode-generator')
+
 const clipboard = require("nativescript-clipboard");
 
 export default {
@@ -68,13 +69,14 @@ export default {
           const noport = nohttps.split(':')[0]
           this.connectString = `${result.id}@${noport}:${result.binding[0].port}`
         }
-        QRCode.toDataURL(this.connectString)
-          .then(id => {
-            this.qrcode = id;
-          })
-          .catch(err => {
-            console.error(err);
-          });
+        const typeNumber = 0;
+        const errorCorrectionLevel = 'Q';
+        const qr = qrcode(typeNumber, errorCorrectionLevel);
+        qr.addData(this.connectString);
+        qr.make();
+
+        this.qrcode = qr.createDataURL()
+
       });
     },
     clip() {
