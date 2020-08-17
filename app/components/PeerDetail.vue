@@ -11,6 +11,9 @@
         <Label class="label biglabel" text="Peer id" width="100%"/>
         <TextView :text="$props.peer.id" width="100%"/>
 
+        <Label class="label biglabel" text="Alias" width="100%"/>
+        <Label class="centerlabel" :text="$props.peer.alias" width="100%"/>
+
         <Label class="label biglabel" text="Peer Connection" width="100%"/>
         <Label class="label" text="connected" width="30%"/>
         <Label :text="$props.peer.connected" width="70%"/>

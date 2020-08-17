@@ -22,3 +22,7 @@ WrapLayout {
     text-align: center;
     margin-top: 15;
   }
+
+  .centerlabel {
+    text-align: center;
+  }

@@ -100,18 +100,18 @@
         <TabViewItem title="Channels">
           <ListView for="peer in peers" @itemTap="onTapPeerList">
             <v-template>
-              <GridLayout columns="1* 1* 1*" rows="1*" class="list chan">
+              <GridLayout columns="2* 1* 1*" rows="1* 1*" class="list">
                 <Label
-                  :class="peer.connected ? '' : 'failed'"
-                  :text="peer.id"
-                  height="40"
+                  :text="peer.alias"
+                  height="20"
                   col="0"
                   row="0"
+                  class="desc"
                 />
                 <Label
                   :text="peer.theirs"
                   style.textAlignment="right"
-                  height="40"
+                  height="20"
                   col="1"
                   row="0"
                   :class="peer.channel.state == 'CHANNELD_NORMAL' ? '' : 'failed'"
@@ -120,10 +120,19 @@
                   :text="peer.mine"
                   style.textAlignment="right"
                   :class="peer.channel.state == 'CHANNELD_NORMAL' ? 'mine' : 'failed'"
-                  height="40"
+                  height="20"
                   col="2"
                   row="0"
                 />
+                <Label
+                  :class="peer.connected ? '' : 'failed'"
+                  :text="peer.id"
+                  height="30"
+                  col="0"
+                  row="1"
+                  colSpan="3"
+                />
+
               </GridLayout>
             </v-template>
           </ListView>
@@ -196,7 +205,7 @@ import Util from "./util";
 import { BarcodeScanner } from "nativescript-barcodescanner";
 const appSettings = require("application-settings");
 
-global.VERSION = "0.0.6-WIP";
+global.VERSION = "0.0.8-WIP";
 
 export default {
   watch: {
@@ -438,7 +447,7 @@ export default {
         case 2:
           if (!this.listLoaded.peers || refresh)
             this.callRemote("listpeers").then(
-              data => {
+              async data => {
                 this.peers = data.content
                   .toJSON()
                   .result.peers.reduce((o, peer) => {
@@ -471,6 +480,22 @@ export default {
                       ? 1
                       : 0;
                 });
+                let buffPeers = []
+                for(let i = 0; i < this.peers.length; i++) {
+                  try {
+                    let peer = Object.assign({}, this.peers[i])
+                    const node = await this.callRemote("listnodes", [peer.id])
+                    const nodes = node.content.toJSON().result.nodes
+                    for (let c=0; c<peer.channels.length; c++) {
+                      const channel = peer.channels[c]
+                      peer.alias= node.content.toJSON().result.nodes[0].alias
+                      buffPeers.push(peer)                        
+                    }
+                  } catch (e) {
+                    console.log(e)
+                  }
+                }
+                this.peers = buffPeers
               },
               err => console.log(`${err}: ${new Date().toString()}`)
             );
