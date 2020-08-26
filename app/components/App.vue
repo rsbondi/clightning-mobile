@@ -235,6 +235,7 @@ export default {
   data() {
     return {
       peers: [],
+      aliases: {},
       payments: [],
       invoices: [],
       selectedIndex: -1,
@@ -484,11 +485,10 @@ export default {
                 for(let i = 0; i < this.peers.length; i++) {
                   try {
                     let peer = Object.assign({}, this.peers[i])
-                    const node = await this.callRemote("listnodes", [peer.id])
-                    const nodes = node.content.toJSON().result.nodes
+                    const peerAlias = await this.getAlias(peer.id)
                     for (let c=0; c<peer.channels.length; c++) {
                       const channel = peer.channels[c]
-                      peer.alias= node.content.toJSON().result.nodes[0].alias
+                      peer.alias= peerAlias
                       buffPeers.push(peer)                        
                     }
                   } catch (e) {
@@ -509,6 +509,18 @@ export default {
             }
             break;
       }
+    },
+    getAlias(peerId) {
+      return new Promise((resolve, reject) => {
+        if (this.aliases[peerId]) {resolve(this.aliases[peerId])}
+        else {
+          this.callRemote("listnodes", [peerId]).then(node => {
+            const alias = node.content.toJSON().result.nodes[0].alias
+            this.aliases[peerId] = alias
+            resolve(alias)
+          }).catch(e => reject)
+        }
+      })
     },
     execCustom() {
       this.callRemote(this.customCommand).then(data => {
